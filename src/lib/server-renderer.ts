@@ -473,96 +473,186 @@ async function renderImageObject(
     ctx.globalAlpha = opacity;
 
     const borderRadius = image.borderRadius || 0;
+    const hasShadow = basicStyles?.shadow && Array.isArray(basicStyles.shadow) && basicStyles.shadow.length > 0;
 
-    // If there's a shadow, we need to draw the shadow shape first
-    // before clipping, otherwise the shadow gets clipped too
-    if (basicStyles?.shadow && Array.isArray(basicStyles.shadow) && basicStyles.shadow.length > 0) {
+    // If there's a shadow with border radius, we need to use an offscreen canvas
+    // to avoid the shadow being clipped
+    if (hasShadow && borderRadius > 0) {
       const shadow = basicStyles.shadow[0];
       
-      // Draw a filled shape with shadow to create the shadow effect
-      ctx.save();
-      ctx.shadowColor = shadow.color || 'rgba(0, 0, 0, 0.1)';
-      ctx.shadowBlur = shadow.blur || 0;
-      ctx.shadowOffsetX = shadow.offsetX || 0;
-      ctx.shadowOffsetY = shadow.offsetY || 0;
+      // Create offscreen canvas for the clipped image
+      const offscreenCanvas = createCanvas(width, height);
+      const offscreenCtx = offscreenCanvas.getContext('2d');
       
-      // Fill a solid shape matching the image bounds to cast the shadow
-      // The shadow will appear around it, then we'll draw the image over this shape
-      ctx.fillStyle = 'rgba(255, 255, 255, 1)'; // Opaque white
-      ctx.beginPath();
-      if (borderRadius > 0) {
-        createRoundedRectPath(ctx, width, height, borderRadius);
+      // Apply border radius clipping on the offscreen canvas
+      offscreenCtx.beginPath();
+      createRoundedRectPath(offscreenCtx, width, height, borderRadius);
+      offscreenCtx.clip();
+      
+      // Draw image to offscreen canvas with clipping applied
+      if (image.crop?.sourceRect) {
+        const { sourceRect } = image.crop;
+        offscreenCtx.drawImage(
+          img as unknown as Image,
+          sourceRect.x,
+          sourceRect.y,
+          sourceRect.width,
+          sourceRect.height,
+          0,
+          0,
+          width,
+          height
+        );
       } else {
-        ctx.rect(0, 0, width, height);
+        // Use "cover" behavior
+        const imgWidth = img.width;
+        const imgHeight = img.height;
+        const containerRatio = width / height;
+        const imageRatio = imgWidth / imgHeight;
+
+        let sx = 0, sy = 0, sWidth = imgWidth, sHeight = imgHeight;
+
+        if (containerRatio > imageRatio) {
+          sWidth = imgWidth;
+          sHeight = imgWidth / containerRatio;
+          sx = 0;
+          sy = (imgHeight - sHeight) / 2;
+        } else {
+          sHeight = imgHeight;
+          sWidth = imgHeight * containerRatio;
+          sy = 0;
+          sx = (imgWidth - sWidth) / 2;
+        }
+
+        offscreenCtx.drawImage(
+          img as unknown as Image,
+          sx,
+          sy,
+          sWidth,
+          sHeight,
+          0,
+          0,
+          width,
+          height
+        );
       }
-      ctx.fill();
       
-      // Also stroke to ensure shadow is visible
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.01)';
-      ctx.lineWidth = 1;
-      ctx.stroke();
+      // Now draw the offscreen canvas to the main canvas with shadow
+      // Canvas shadows are typically lighter than CSS box-shadows
+      // Apply a multiplier to blur and enhance intensity to match browser appearance
+      const blurMultiplier = 1.5; // Canvas blur needs to be stronger to match CSS
+      const spread = shadow.spread || 0;
       
-      ctx.restore();
+      // Parse the shadow color to potentially increase opacity
+      let shadowColor = shadow.color || 'rgba(0, 0, 0, 0.1)';
       
-      console.log(`  Applied shadow: blur=${shadow.blur}, offset=(${shadow.offsetX}, ${shadow.offsetY}), color=${shadow.color}`);
-    }
-
-    // Apply border radius clipping if specified
-    if (borderRadius > 0) {
-      ctx.beginPath();
-      createRoundedRectPath(ctx, width, height, borderRadius);
-      ctx.clip();
-    }
-
-    if (image.crop?.sourceRect) {
-      // Handle cropping
-      const { sourceRect } = image.crop;
-      ctx.drawImage(
-        img as unknown as Image,
-        sourceRect.x,
-        sourceRect.y,
-        sourceRect.width,
-        sourceRect.height,
-        0,
-        0,
-        width,
-        height
-      );
+      // If there's a spread value, we need to simulate it by drawing the shadow multiple times
+      // or by using a slightly larger shape (canvas doesn't natively support spread)
+      if (spread > 0) {
+        // Draw shadow multiple times with slight offsets to simulate spread
+        for (let i = 0; i <= spread; i++) {
+          ctx.shadowColor = shadowColor;
+          ctx.shadowBlur = (shadow.blur || 0) * blurMultiplier;
+          ctx.shadowOffsetX = (shadow.offsetX || 0);
+          ctx.shadowOffsetY = (shadow.offsetY || 0);
+          ctx.drawImage(offscreenCanvas as any, 0, 0);
+        }
+      } else {
+        // Standard shadow rendering with enhanced blur
+        ctx.shadowColor = shadowColor;
+        ctx.shadowBlur = (shadow.blur || 0) * blurMultiplier;
+        ctx.shadowOffsetX = shadow.offsetX || 0;
+        ctx.shadowOffsetY = shadow.offsetY || 0;
+        ctx.drawImage(offscreenCanvas as any, 0, 0);
+      }
+      
+      // Reset shadow for border drawing
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+      
+      console.log(`  Applied shadow: blur=${shadow.blur}*${blurMultiplier}=${(shadow.blur || 0) * blurMultiplier}, offset=(${shadow.offsetX}, ${shadow.offsetY}), spread=${spread}, color=${shadowColor}`);
     } else {
-      // Use "cover" behavior: scale image to cover the entire container
-      // Calculate scale to cover (larger of the two ratios)
-      const imgWidth = img.width;
-      const imgHeight = img.height;
-      const containerRatio = width / height;
-      const imageRatio = imgWidth / imgHeight;
-
-      let sx = 0, sy = 0, sWidth = imgWidth, sHeight = imgHeight;
-
-      if (containerRatio > imageRatio) {
-        // Container is wider - fit to width, crop height
-        sWidth = imgWidth;
-        sHeight = imgWidth / containerRatio;
-        sx = 0;
-        sy = (imgHeight - sHeight) / 2; // Center vertically
-      } else {
-        // Container is taller - fit to height, crop width
-        sHeight = imgHeight;
-        sWidth = imgHeight * containerRatio;
-        sy = 0;
-        sx = (imgWidth - sWidth) / 2; // Center horizontally
+      // No shadow or no border radius - use standard approach
+      
+      // Apply shadow if present (without border radius, standard clipping works)
+      if (hasShadow) {
+        const shadow = basicStyles.shadow[0];
+        const blurMultiplier = 1.5; // Canvas blur needs to be stronger to match CSS
+        
+        ctx.shadowColor = shadow.color || 'rgba(0, 0, 0, 0.1)';
+        ctx.shadowBlur = (shadow.blur || 0) * blurMultiplier;
+        ctx.shadowOffsetX = shadow.offsetX || 0;
+        ctx.shadowOffsetY = shadow.offsetY || 0;
+        console.log(`  Applied shadow: blur=${shadow.blur}*${blurMultiplier}=${(shadow.blur || 0) * blurMultiplier}, offset=(${shadow.offsetX}, ${shadow.offsetY}), color=${shadow.color}`);
+      }
+      
+      // Apply border radius clipping if specified
+      if (borderRadius > 0) {
+        ctx.beginPath();
+        createRoundedRectPath(ctx, width, height, borderRadius);
+        ctx.clip();
       }
 
-      ctx.drawImage(
-        img as unknown as Image,
-        sx,
-        sy,
-        sWidth,
-        sHeight,
-        0,
-        0,
-        width,
-        height
-      );
+      if (image.crop?.sourceRect) {
+        // Handle cropping
+        const { sourceRect } = image.crop;
+        ctx.drawImage(
+          img as unknown as Image,
+          sourceRect.x,
+          sourceRect.y,
+          sourceRect.width,
+          sourceRect.height,
+          0,
+          0,
+          width,
+          height
+        );
+      } else {
+        // Use "cover" behavior: scale image to cover the entire container
+        // Calculate scale to cover (larger of the two ratios)
+        const imgWidth = img.width;
+        const imgHeight = img.height;
+        const containerRatio = width / height;
+        const imageRatio = imgWidth / imgHeight;
+
+        let sx = 0, sy = 0, sWidth = imgWidth, sHeight = imgHeight;
+
+        if (containerRatio > imageRatio) {
+          // Container is wider - fit to width, crop height
+          sWidth = imgWidth;
+          sHeight = imgWidth / containerRatio;
+          sx = 0;
+          sy = (imgHeight - sHeight) / 2; // Center vertically
+        } else {
+          // Container is taller - fit to height, crop width
+          sHeight = imgHeight;
+          sWidth = imgHeight * containerRatio;
+          sy = 0;
+          sx = (imgWidth - sWidth) / 2; // Center horizontally
+        }
+
+        ctx.drawImage(
+          img as unknown as Image,
+          sx,
+          sy,
+          sWidth,
+          sHeight,
+          0,
+          0,
+          width,
+          height
+        );
+      }
+      
+      // Reset shadow properties after drawing
+      if (hasShadow) {
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+      }
     }
 
     // Draw border if specified in basicStyles
@@ -931,14 +1021,18 @@ export async function renderCanvasServerSide(
       // Apply the first shadow (canvas supports one shadow at a time)
       const shadow = obj.basicStyles.shadow[0];
       if (shadow) {
+        // Canvas shadows are typically lighter than CSS box-shadows
+        // Apply a multiplier to blur to better match browser appearance
+        const blurMultiplier = 1.5;
+        
         ctx.shadowColor = shadow.color || 'rgba(0, 0, 0, 0.1)';
-        ctx.shadowBlur = shadow.blur || 0;
+        ctx.shadowBlur = (shadow.blur || 0) * blurMultiplier;
         ctx.shadowOffsetX = shadow.offsetX || 0;
         ctx.shadowOffsetY = shadow.offsetY || 0;
         
         // Note: Canvas doesn't support shadow spread directly
         // We would need to draw a larger shape for spread effect
-        // For now, we'll just use blur, offsetX, and offsetY
+        // For now, we'll just use blur, offsetX, and offsetY with enhanced blur
       }
     }
 
