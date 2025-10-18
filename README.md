@@ -4,6 +4,7 @@ Fast HTTP API that converts JSON canvas data to PNG images. Built with Fastify, 
 
 ## 🎯 Key Features
 
+✅ **Multi-Language Support** - Korean, Japanese, Chinese, Arabic, Thai, Hebrew, Hindi & more  
 ✅ **Dynamic Font Loading** - Google Fonts by name OR custom fonts by URL  
 ✅ **Base64 Images** - No external URLs needed  
 ✅ **Fast** - 200-400ms per render  
@@ -424,13 +425,27 @@ fs.writeFileSync('output.jpg', jpegBuffer);
 
 #### CORS Policy
 
-By default, the API allows all origins. You can restrict this using environment variables:
+The API automatically configures CORS based on the environment:
+
+**🔧 Development Mode (default):**
+- ✅ All origins allowed automatically
+- ✅ No CORS restrictions
+- ✅ Perfect for local development (`NODE_ENV !== 'production'`)
+
+**🚀 Production Mode:**
+- 🔒 Only `https://flyingshelf.ai` allowed by default
+- 🔐 Use `ALLOWED_ORIGINS` env var to customize
 
 ```bash
-# Allow specific origins
+# Development (automatic)
+npm run dev  # CORS disabled automatically
+
+# Production - Allow specific origins
+export NODE_ENV=production
 export ALLOWED_ORIGINS="https://yourdomain.com,https://app.yourdomain.com"
 
-# Allow all origins (default)
+# Production - Allow all origins (not recommended)
+export NODE_ENV=production
 export ALLOWED_ORIGINS="*"
 ```
 
@@ -474,6 +489,58 @@ const response = await fetch('http://localhost:3000/render', {
 2. Store the secret securely (environment variables, secret managers)
 3. Never expose the secret in client-side code
 4. Rotate secrets periodically
+
+---
+
+### 🌏 Multi-Language Support
+
+The service automatically supports text in **multiple languages and scripts** out of the box:
+
+**Supported Languages:**
+- 🇰🇷 **Korean** (한국어)
+- 🇯🇵 **Japanese** (日本語)
+- 🇨🇳 **Chinese** Simplified & Traditional (中文)
+- 🇸🇦 **Arabic** (العربية)
+- 🇹🇭 **Thai** (ไทย)
+- 🇮🇱 **Hebrew** (עברית)
+- 🇮🇳 **Hindi & Devanagari** (हिन्दी)
+- 🇬🇷 **Greek** (Ελληνικά)
+- 🇷🇺 **Cyrillic** (Русский)
+- And many more Unicode scripts
+
+**How It Works:**
+1. Noto fonts (Google's universal font family) are pre-installed in the Docker container
+2. Font fallback chain automatically uses the correct font for each character
+3. No configuration needed - just send text in any language!
+
+**Example - Korean Text:**
+```json
+{
+  "components": [{
+    "type": "text",
+    "text": {
+      "blocks": [{
+        "spans": [{
+          "text": "안녕하세요! 환영합니다.",
+          "fontFamily": "Arial",
+          "fontSize": "48px"
+        }]
+      }]
+    }
+  }]
+}
+```
+
+**Font Fallback Chain:**
+```
+Requested Font → Noto Sans CJK KR → Noto Sans → DejaVu Sans → sans-serif
+```
+
+This ensures that:
+- Latin characters use your requested font (e.g., Arial, Roboto)
+- Korean, Japanese, Chinese use Noto Sans CJK
+- Other Unicode characters use appropriate Noto fonts
+- Everything renders correctly, even in mixed-language text!
 
 ---
 
@@ -695,8 +762,9 @@ gcloud run deploy flyingshelf-photographer-service \
 
 | Variable | Default | Description | Example |
 |----------|---------|-------------|---------|
+| `NODE_ENV` | (unset) | Environment mode | `production` (dev mode when unset) |
 | `PORT` | `3000` | Server port | `3000`, `8080` |
-| `ALLOWED_ORIGINS` | `*` | Allowed CORS origins (comma-separated) | `https://yourdomain.com,http://localhost:3001` |
+| `ALLOWED_ORIGINS` | `*` (dev) or `https://flyingshelf.ai` (prod) | Allowed CORS origins (comma-separated) | `https://yourdomain.com,http://localhost:3001` |
 | `API_SECRET` | `your-secret-key-change-this` | Secret for bypassing CORS | Generate with: `openssl rand -hex 32` |
 
 ### Generate Secure Secrets

@@ -308,8 +308,9 @@ async function renderTextObject(
     const maxLineHeight = Math.max(...segments.map(s => s.fontSize));
 
     for (const segment of segments) {
-      // Use exact font name - it's already registered
-      ctx.font = `${segment.fontStyle} ${segment.fontWeight} ${segment.fontSize}px "${segment.fontFamily}"`;
+      // Use font with Unicode fallback chain for multi-language support
+      const fontFallback = `"${segment.fontFamily}", "Noto Sans CJK KR", "Noto Sans", "DejaVu Sans", sans-serif`;
+      ctx.font = `${segment.fontStyle} ${segment.fontWeight} ${segment.fontSize}px ${fontFallback}`;
       
       if (segment.letterSpacing) {
         (ctx as any).letterSpacing = segment.letterSpacing;
@@ -363,8 +364,9 @@ async function renderTextObject(
 
       // Render each segment in the line
       for (const segment of line) {
-        // Use exact font name - it's already registered
-        ctx.font = `${segment.fontStyle} ${segment.fontWeight} ${segment.fontSize}px "${segment.fontFamily}"`;
+        // Use font with Unicode fallback chain for multi-language support
+        const fontFallback = `"${segment.fontFamily}", "Noto Sans CJK KR", "Noto Sans", "DejaVu Sans", sans-serif`;
+        ctx.font = `${segment.fontStyle} ${segment.fontWeight} ${segment.fontSize}px ${fontFallback}`;
         ctx.fillStyle = segment.color;
 
         if (segment.letterSpacing) {

@@ -1,6 +1,9 @@
 import { GlobalFonts } from '@napi-rs/canvas';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const registeredFonts = new Set<string>();
+const unicodeFontsInitialized = new Set<string>();
 
 /**
  * Register system fonts that are available in the container
@@ -54,12 +57,70 @@ function registerSystemFont(fontFamily: string): boolean {
 }
 
 /**
- * Initialize Unicode-capable fonts
+ * Register Noto CJK fonts from system directories
+ */
+function registerNotoCJKFonts(): void {
+  const notoFontPath = '/usr/share/fonts/noto';
+  
+  // Define explicit font mappings for CJK fonts
+  const cjkFonts = [
+    { file: 'NotoSansCJKkr-Regular.otf', family: 'Noto Sans CJK KR' },
+    { file: 'NotoSansCJKkr-Bold.otf', family: 'Noto Sans CJK KR' },
+    { file: 'NotoSansCJKjp-Regular.otf', family: 'Noto Sans CJK JP' },
+    { file: 'NotoSansCJKjp-Bold.otf', family: 'Noto Sans CJK JP' },
+    { file: 'NotoSansCJKsc-Regular.otf', family: 'Noto Sans CJK SC' },
+    { file: 'NotoSansCJKsc-Bold.otf', family: 'Noto Sans CJK SC' },
+  ];
+
+  let registeredCount = 0;
+  
+  for (const font of cjkFonts) {
+    const fullPath = path.join(notoFontPath, font.file);
+    try {
+      if (fs.existsSync(fullPath)) {
+        GlobalFonts.registerFromPath(fullPath, font.family);
+        unicodeFontsInitialized.add(font.family);
+        registeredCount++;
+      }
+    } catch (error) {
+      console.warn(`Failed to register ${font.file}:`, error);
+    }
+  }
+  
+  if (registeredCount > 0) {
+    console.log(`✅ Registered ${registeredCount} Noto CJK font files`);
+  }
+}
+
+/**
+ * Initialize Unicode-capable fonts for multi-language support
  */
 export function initializeUnicodeFonts(): void {
+  console.log('🌏 Initializing multi-language font support...');
+  
+  // Register Noto CJK fonts for Korean, Japanese, Chinese
+  registerNotoCJKFonts();
+  
   // Register common system fonts
   registerSystemFont('DejaVu Sans');
-  console.log('Available fonts:', GlobalFonts.families.map(f => f.family).join(', '));
+  
+  const availableFonts = GlobalFonts.families.map(f => f.family);
+  
+  console.log(`✅ Total font families available: ${availableFonts.length}`);
+  
+  // Log CJK font support with specific details
+  const cjkFonts = availableFonts.filter(f => f.includes('CJK'));
+  if (cjkFonts.length > 0) {
+    console.log(`   🇰🇷 🇯🇵 🇨🇳 CJK Fonts: ${cjkFonts.join(', ')}`);
+  } else {
+    console.warn('   ⚠️  No CJK fonts found - Korean/Japanese/Chinese may not render correctly');
+  }
+  
+  // Log other available fonts
+  const otherFonts = availableFonts.filter(f => !f.includes('CJK')).slice(0, 5);
+  if (otherFonts.length > 0) {
+    console.log(`   📝 Other fonts: ${otherFonts.join(', ')}${availableFonts.length > 5 ? '...' : ''}`);
+  }
 }
 
 /**
@@ -71,10 +132,14 @@ export function registerFont(fontFamily: string): void {
 }
 
 /**
- * Get font string with fallback
+ * Get font string with fallback including Unicode support
  */
 export function getFontWithFallback(fontFamily: string): string {
-  // Use DejaVu Sans as fallback (available in Alpine)
-  return `"${fontFamily}", "DejaVu Sans", sans-serif`;
+  // Multi-language fallback chain:
+  // 1. Requested font
+  // 2. Noto Sans CJK (Korean, Japanese, Chinese)
+  // 3. DejaVu Sans (Latin, Cyrillic, Greek)
+  // 4. System sans-serif
+  return `"${fontFamily}", "Noto Sans CJK KR", "Noto Sans", "DejaVu Sans", sans-serif`;
 }
 

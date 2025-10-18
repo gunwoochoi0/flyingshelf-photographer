@@ -16,16 +16,25 @@ RUN apk add --no-cache \
     font-noto \
     font-liberation \
     font-liberation-sans-narrow \
-    wget
+    wget \
+    unzip \
+    curl
 
-# Download Google Fonts at build time for production use
-# Edit fonts-build.txt to customize which fonts are pre-installed
-# TEMPORARILY DISABLED - Using runtime downloads with detailed logging
-# COPY fonts-build.txt /tmp/fonts.txt
-# COPY scripts/download-fonts.sh /tmp/download-fonts.sh
-# RUN chmod +x /tmp/download-fonts.sh && \
-#     /tmp/download-fonts.sh && \
-#     rm /tmp/download-fonts.sh /tmp/fonts.txt
+# Download and install Noto Sans CJK fonts for Korean, Japanese, Chinese support
+RUN mkdir -p /usr/share/fonts/noto && \
+    cd /usr/share/fonts/noto && \
+    # Download Noto Sans CJK KR (Korean)
+    wget -q https://github.com/notofonts/noto-cjk/raw/main/Sans/OTF/Korean/NotoSansCJKkr-Regular.otf && \
+    wget -q https://github.com/notofonts/noto-cjk/raw/main/Sans/OTF/Korean/NotoSansCJKkr-Bold.otf && \
+    # Download Noto Sans CJK JP (Japanese)
+    wget -q https://github.com/notofonts/noto-cjk/raw/main/Sans/OTF/Japanese/NotoSansCJKjp-Regular.otf && \
+    wget -q https://github.com/notofonts/noto-cjk/raw/main/Sans/OTF/Japanese/NotoSansCJKjp-Bold.otf && \
+    # Download Noto Sans CJK SC (Simplified Chinese)
+    wget -q https://github.com/notofonts/noto-cjk/raw/main/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf && \
+    wget -q https://github.com/notofonts/noto-cjk/raw/main/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Bold.otf && \
+    # Update font cache
+    fc-cache -f -v && \
+    echo "✓ Installed Noto CJK fonts"
 
 # Create fonts directory for runtime downloads
 RUN mkdir -p /usr/share/fonts/truetype/google-fonts

@@ -11,9 +11,12 @@ const PORT = Number(process.env.PORT) || 3000;
 
 // Secret for bypassing CORS (set via environment variable)
 const API_SECRET = process.env.API_SECRET || 'your-secret-key-change-this';
+const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production';
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',') 
-  : ["https://flyingshelf.ai"]; // Default: production only
+  : IS_DEVELOPMENT 
+    ? ['*'] // Development: Allow all origins
+    : ['https://flyingshelf.ai']; // Production: Restrict to specific origins
 
 // CORS configuration with secret header bypass
 fastify.register(cors, {
@@ -267,8 +270,10 @@ fastify.listen({ port: PORT, host: '0.0.0.0' }, (err, address) => {
   }
   
   const corsInfo = ALLOWED_ORIGINS[0] === '*' 
-    ? 'All origins allowed' 
+    ? '🟢 All origins allowed (development mode)' 
     : `Allowed origins: ${ALLOWED_ORIGINS.join(', ')}`;
+  
+  const envMode = IS_DEVELOPMENT ? '🔧 Development' : '🚀 Production';
   
   console.log(`
 🎨 Canvas Render Service
@@ -276,10 +281,11 @@ fastify.listen({ port: PORT, host: '0.0.0.0' }, (err, address) => {
 ✅ Server: ${address}
 🏥 Health: ${address}/health
 🎯 Example: ${address}/render/example
+📡 Mode: ${envMode}
 🔐 CORS: ${corsInfo}
 🔑 Secret: ${API_SECRET === 'your-secret-key-change-this' ? '⚠️  Using default secret (change in production!)' : '✓ Custom secret configured'}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💡 Tip: Use X-API-Secret header to bypass CORS
+💡 Tip: ${IS_DEVELOPMENT ? 'CORS is disabled in development mode' : 'Use X-API-Secret header to bypass CORS'}
   `);
 });
 

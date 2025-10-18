@@ -213,7 +213,8 @@ export async function renderTableServerSide(
         const cellFontWeight = cell.style?.fontWeight || rowFontWeight;
         
         ctx.fillStyle = cellColor;
-        ctx.font = `${cellFontWeight} ${fontSize}px Arial, sans-serif`;
+        // Use font fallback chain for multi-language support (Korean, Japanese, Chinese, etc.)
+        ctx.font = `${cellFontWeight} ${fontSize}px "Noto Sans CJK KR", "Noto Sans", "DejaVu Sans", Arial, sans-serif`;
         ctx.textBaseline = 'middle';
 
         // Wrap text to fit cell width
