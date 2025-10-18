@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Test output
+test/output.png
+test/*.png
+
+# Font cache
+.fonts-cache/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# NPM tokens (keep secrets out of git)
+.npmrc
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Docker
+.dockerignore
+
+# Logs
+*.log
+logs/
+

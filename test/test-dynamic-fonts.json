@@ -1,0 +1,71 @@
+{
+  "components": [
+    {
+      "id": "text-1",
+      "type": "text",
+      "name": "Google Font Test",
+      "x": 50,
+      "y": 50,
+      "width": 900,
+      "height": 150,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "center",
+          "lineHeight": "1.2",
+          "spans": [{
+            "text": "Dynamic Google Font!",
+            "color": "#4A90E2",
+            "marks": ["bold"],
+            "fontSize": "72px",
+            "fontFamily": "Pacifico"
+          }]
+        }]
+      }
+    },
+    {
+      "id": "text-2",
+      "type": "text",
+      "name": "Another Google Font",
+      "x": 50,
+      "y": 220,
+      "width": 900,
+      "height": 100,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "center",
+          "lineHeight": "1.4",
+          "spans": [{
+            "text": "Another font downloaded on-the-fly",
+            "color": "#E74C3C",
+            "marks": [],
+            "fontSize": "36px",
+            "fontFamily": "Lobster"
+          }]
+        }]
+      }
+    }
+  ],
+  "dimensions": {
+    "width": 1000,
+    "height": 400
+  },
+  "background": {
+    "url": "",
+    "color": "#F8F9FA"
+  },
+  "fonts": {
+    "Pacifico": "Pacifico",
+    "Lobster": "Lobster"
+  }
+}
+

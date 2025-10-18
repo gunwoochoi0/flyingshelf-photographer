@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  canvas-api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      # Add network mode for build to ensure internet access during build
+      network: host
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    volumes:
+      - ./.fonts-cache:/app/.fonts-cache
+    restart: unless-stopped
+    # Add DNS configuration to fix network issues
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+    # Use host network if font downloads still fail
+    # network_mode: host
+    # Add extra hosts for font services
+    extra_hosts:
+      - "fonts.googleapis.com:142.250.185.170"
+      - "fonts.gstatic.com:142.251.32.35"

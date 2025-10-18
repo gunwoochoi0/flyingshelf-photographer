@@ -1,0 +1,121 @@
+# Production Fonts - Downloaded at Docker Build Time
+# Choose your strategy:
+# - Minimal: Comment out most fonts (fast build)
+# - Popular: Keep top 50-100 fonts (recommended)
+# - Comprehensive: Keep all fonts (slower build)
+#
+# Build time: ~2-3 minutes | Image size: +50MB
+
+# === Top 20 Most Used ===
+Roboto:300,400,500,700,900
+Open Sans:300,400,600,700,800
+Lato:300,400,700,900
+Montserrat:300,400,500,600,700,800,900
+Roboto Condensed:300,400,700
+Oswald:300,400,500,600,700
+Source Sans Pro:300,400,600,700,900
+Raleway:300,400,500,600,700,800,900
+PT Sans:400,700
+Merriweather:300,400,700,900
+
+# === Sans-serif (Popular) ===
+Poppins:300,400,500,600,700,800,900
+Ubuntu:300,400,500,700
+Nunito:300,400,600,700,800,900
+Roboto Slab:300,400,500,700,900
+Playfair Display:400,700,900
+Rubik:300,400,500,700,900
+Work Sans:300,400,500,600,700,800,900
+Inter:300,400,500,600,700,800,900
+Mukta:300,400,600,700,800
+Noto Sans:400,700
+
+# === Serif ===
+Lora:400,700
+PT Serif:400,700
+Crimson Text:400,600,700
+Libre Baskerville:400,700
+Arvo:400,700
+Merriweather Sans:300,400,700,800
+
+# === Display & Decorative ===
+Bebas Neue:400
+Pacifico:400
+Lobster:400
+Dancing Script:400,700
+Righteous:400
+Permanent Marker:400
+Indie Flower:400
+Satisfy:400
+Great Vibes:400
+Caveat:400,700
+
+# === Monospace ===
+Roboto Mono:300,400,500,700
+Source Code Pro:300,400,600,700,900
+Inconsolata:400,700
+Courier Prime:400,700
+
+# === Handwriting ===
+Shadows Into Light:400
+Kaushan Script:400
+Amatic SC:400,700
+Patrick Hand:400
+
+# === Modern Sans ===
+Nunito Sans:300,400,600,700,800,900
+Oxygen:300,400,700
+Quicksand:300,400,500,700
+Karla:300,400,700,800
+Barlow:300,400,500,700,900
+DM Sans:400,500,700
+Manrope:300,400,500,700,800
+
+# === Professional ===
+IBM Plex Sans:300,400,500,700
+Fira Sans:300,400,500,700,900
+Titillium Web:300,400,600,700,900
+Mulish:300,400,600,700,900
+Red Hat Display:400,500,700,900
+
+# === Geometric ===
+Comfortaa:300,400,700
+Josefin Sans:300,400,600,700
+Varela Round:400
+Questrial:400
+Prompt:300,400,500,700
+
+# === Elegant ===
+Cormorant Garamond:300,400,700
+EB Garamond:400,700
+Cinzel:400,700,900
+Libre Caslon Text:400,700
+
+# === Condensed ===
+Fjalla One:400
+Anton:400
+Archivo Narrow:400,700
+Yanone Kaffeesatz:400,700
+
+# === Body Text ===
+Hind:300,400,600,700
+Libre Franklin:300,400,600,700,900
+Noto Serif:400,700
+Assistant:300,400,600,700,800
+
+# === Headers ===
+Bitter:400,700
+Encode Sans:300,400,600,700,900
+Arimo:400,700
+Tajawal:400,700
+
+# === Additional Popular ===
+Heebo:300,400,500,700,900
+Space Grotesk:300,400,500,700
+Cabin:400,600,700
+Exo 2:300,400,600,700,900
+Archivo:400,600,700
+Saira:300,400,600,700
+Alegreya:400,700
+Public Sans:400,600,700,800
+

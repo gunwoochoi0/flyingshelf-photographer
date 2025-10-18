@@ -1,0 +1,113 @@
+{
+  "components": [
+    {
+      "id": "text-1",
+      "type": "text",
+      "name": "Pre-installed Font",
+      "x": 100,
+      "y": 50,
+      "width": 800,
+      "height": 100,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "left",
+          "spans": [{
+            "text": "This uses Roboto (pre-installed)",
+            "color": "#2C3E50",
+            "marks": ["bold"],
+            "fontSize": "48px",
+            "fontFamily": "Roboto"
+          }]
+        }]
+      }
+    },
+    {
+      "id": "text-2",
+      "type": "text",
+      "name": "Google Font On-Demand",
+      "x": 100,
+      "y": 200,
+      "width": 800,
+      "height": 100,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "left",
+          "spans": [{
+            "text": "Google Font downloaded on-the-fly",
+            "color": "#E74C3C",
+            "marks": [],
+            "fontSize": "42px",
+            "fontFamily": "Pacifico"
+          }]
+        }]
+      }
+    },
+    {
+      "id": "img-1",
+      "type": "image",
+      "name": "Base64 Image",
+      "x": 100,
+      "y": 350,
+      "width": 150,
+      "height": 150,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "image": {
+        "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iIzNBQTc1NyIgcng9IjEwIi8+PHRleHQgeD0iNzUiIHk9Ijg1IiBmb250LXNpemU9IjI0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmFzZTY0PC90ZXh0Pjwvc3ZnPg==",
+        "alt": "Base64 SVG",
+        "naturalWidth": 150,
+        "naturalHeight": 150
+      }
+    },
+    {
+      "id": "text-3",
+      "type": "text",
+      "name": "Custom Font Info",
+      "x": 300,
+      "y": 400,
+      "width": 600,
+      "height": 100,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "left",
+          "spans": [{
+            "text": "Add your custom font URLs in the fonts parameter!",
+            "color": "#7F8C8D",
+            "marks": [],
+            "fontSize": "24px",
+            "fontFamily": "Open Sans"
+          }]
+        }]
+      }
+    }
+  ],
+  "dimensions": {
+    "width": 1000,
+    "height": 550
+  },
+  "background": {
+    "url": "",
+    "color": "#FFFFFF"
+  },
+  "fonts": {
+    "Pacifico": "Pacifico"
+  }
+}
+

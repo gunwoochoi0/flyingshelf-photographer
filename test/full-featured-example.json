@@ -1,0 +1,89 @@
+{
+  "components": [
+    {
+      "id": "title",
+      "type": "text",
+      "name": "Title with Google Font",
+      "x": 50,
+      "y": 50,
+      "width": 900,
+      "height": 120,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 2,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "center",
+          "lineHeight": "1.2",
+          "spans": [{
+            "text": "Dynamic Google Font!",
+            "color": "#2C3E50",
+            "marks": ["bold"],
+            "fontSize": "64px",
+            "fontFamily": "Pacifico"
+          }]
+        }]
+      }
+    },
+    {
+      "id": "logo",
+      "type": "image",
+      "name": "Base64 Logo",
+      "x": 400,
+      "y": 200,
+      "width": 200,
+      "height": 200,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "image": {
+        "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMDAiIGN5PSIxMDAiIHI9IjgwIiBmaWxsPSIjNEVDREMwIi8+PHRleHQgeD0iMTAwIiB5PSIxMTUiIGZvbnQtc2l6ZT0iNDgiIGZpbGw9IndoaXRlIiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+wqc8L3RleHQ+PC9zdmc+",
+        "alt": "Base64 Circle Logo",
+        "naturalWidth": 200,
+        "naturalHeight": 200
+      }
+    },
+    {
+      "id": "subtitle",
+      "type": "text",
+      "name": "Subtitle",
+      "x": 50,
+      "y": 420,
+      "width": 900,
+      "height": 80,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "center",
+          "lineHeight": "1.4",
+          "spans": [{
+            "text": "With base64 image above",
+            "color": "#7F8C8D",
+            "marks": [],
+            "fontSize": "32px",
+            "fontFamily": "Open Sans"
+          }]
+        }]
+      }
+    }
+  ],
+  "dimensions": {
+    "width": 1000,
+    "height": 550
+  },
+  "background": {
+    "url": "",
+    "color": "#F8F9FA"
+  },
+  "fonts": {
+    "Pacifico": "Pacifico"
+  }
+}
+

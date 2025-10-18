@@ -1,0 +1,62 @@
+{
+  "components": [
+    {
+      "id": "text-1",
+      "type": "text",
+      "name": "Custom Font Text",
+      "x": 100,
+      "y": 100,
+      "width": 800,
+      "height": 200,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "center",
+          "lineHeight": "1.2",
+          "spans": [{
+            "text": "This uses a custom font!",
+            "color": "#FF6B6B",
+            "marks": ["bold"],
+            "fontSize": "72px",
+            "fontFamily": "Pacifico"
+          }]
+        }]
+      }
+    },
+    {
+      "id": "img-1",
+      "type": "image",
+      "name": "Base64 Test",
+      "x": 400,
+      "y": 400,
+      "width": 200,
+      "height": 200,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "image": {
+        "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzRFQ0RDNCIvPjx0ZXh0IHg9IjEwMCIgeT0iMTEwIiBmb250LXNpemU9IjQwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QmFzZTY0PC90ZXh0Pjwvc3ZnPg==",
+        "alt": "Base64 SVG Image",
+        "naturalWidth": 200,
+        "naturalHeight": 200
+      }
+    }
+  ],
+  "dimensions": {
+    "width": 1000,
+    "height": 800
+  },
+  "background": {
+    "url": "",
+    "color": "#F5F5F5"
+  },
+  "fonts": {
+    "Pacifico": "https://fonts.gstatic.com/s/pacifico/v22/FwZY7-Qmy14u9lezJ96A4sijpFu_.ttf"
+  }
+}
+

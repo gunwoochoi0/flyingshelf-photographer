@@ -1,0 +1,87 @@
+# Cloud Build configuration for Canvas Render Service
+# This file is used to build and deploy the service to Google Cloud Run
+#
+# Prerequisites:
+# 1. Store NPM token in Secret Manager:
+#    echo -n "YOUR_GITHUB_TOKEN" | gcloud secrets create npm-token --data-file=-
+#
+# 2. Grant Cloud Build access to the secret:
+#    PROJECT_NUMBER=$(gcloud projects describe $(gcloud config get-value project) --format="value(projectNumber)")
+#    gcloud secrets add-iam-policy-binding npm-token \
+#      --member="serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+#      --role="roles/secretmanager.secretAccessor"
+#
+# 3. Run the build:
+#    gcloud builds submit --config=cloudbuild.yaml
+
+steps:
+  # Step 1: Retrieve NPM token from Secret Manager and create .npmrc
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'create-npmrc'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "📦 Creating .npmrc from Secret Manager..."
+        gcloud secrets versions access latest --secret=npm-token > /workspace/.npmrc-token
+        echo "@gunwoochoi0:registry=https://npm.pkg.github.com/" > /workspace/.npmrc
+        echo "//npm.pkg.github.com/:_authToken=$(cat /workspace/.npmrc-token)" >> /workspace/.npmrc
+        echo "✅ .npmrc created successfully"
+        rm /workspace/.npmrc-token
+    
+  # Step 2: Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-image'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/flyingshelf-photographer:latest'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/flyingshelf-photographer:$BUILD_ID'
+      - '--build-arg'
+      - 'BUILDKIT_INLINE_CACHE=1'
+      - '.'
+    
+  # Step 3: Push the image to Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-image'
+    args:
+      - 'push'
+      - '--all-tags'
+      - 'gcr.io/$PROJECT_ID/flyingshelf-photographer'
+
+  # Step 4: Deploy to Cloud Run with environment variables
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-cloud-run'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'flyingshelf-photographer'
+      - '--image=gcr.io/$PROJECT_ID/flyingshelf-photographer:latest'
+      - '--platform=managed'
+      - '--region=us-central1'
+      - '--memory=2Gi'
+      - '--cpu=2'
+      - '--timeout=900s'
+      - '--concurrency=50'
+      - '--max-instances=10'
+      - '--min-instances=0'
+      - '--allow-unauthenticated'
+      - '--set-env-vars=ALLOWED_ORIGINS=https://flyingshelf.ai'
+      - '--set-secrets=API_SECRET=api-secret:latest'
+      - '--port=3000'
+
+# The images that will be pushed to Container Registry
+images:
+  - 'gcr.io/$PROJECT_ID/flyingshelf-photographer:latest'
+  - 'gcr.io/$PROJECT_ID/flyingshelf-photographer:$BUILD_ID'
+
+# Build timeout (15 minutes)
+timeout: '900s'
+
+# Build options
+options:
+  machineType: 'N1_HIGHCPU_8'
+  logging: CLOUD_LOGGING_ONLY
+

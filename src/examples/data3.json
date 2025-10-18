@@ -1,0 +1,431 @@
+{
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "components": [
+    {
+      "id": "e4a2d1e8-76c9-4b13-9a4d-9b7e9f3b1a2c",
+      "name": "Image",
+      "x": 1750,
+      "y": 100,
+      "width": 70,
+      "height": 81,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 3,
+      "locked": false,
+      "basicStyles": null,
+      "type": "image",
+      "version": "v1",
+      "image": {
+        "alt": "Brand Logo",
+        "src": "flyingshelf-storyboard/captures/1760009118367-906gravbj.png",
+        "borderRadius": null,
+        "naturalWidth": 209,
+        "naturalHeight": 241
+      },
+      "canvas_version_id": "fa93b071-1ba0-4472-859b-a7f346459759"
+    },
+    {
+      "id": "a9f8b7c6-54d3-4e21-8f9a-1b2c3d4e5f6a",
+      "name": "Title",
+      "x": 100,
+      "y": 100,
+      "width": 1500,
+      "height": 78,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 0,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "Reimagining the Future: What Can Be Done?",
+                "color": "#000000",
+                "marks": [
+                  "bold"
+                ],
+                "fontSize": "52px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": null
+          }
+        ]
+      },
+      "canvas_version_id": "fa93b071-1ba0-4472-859b-a7f346459759"
+    },
+    {
+      "id": "016024ff-db75-44e1-b625-cebcaf674b80",
+      "name": "Rec 3 Header",
+      "x": 1300,
+      "y": 250,
+      "width": 520,
+      "height": 42,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 0,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "Redefining \"Family\"",
+                "color": "#000000",
+                "marks": [
+                  "bold"
+                ],
+                "fontSize": "28px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": null
+          }
+        ]
+      },
+      "canvas_version_id": "fa93b071-1ba0-4472-859b-a7f346459759"
+    },
+    {
+      "id": "b1c2d3e4-f5a6-4b7c-8d9e-0a1b2c3d4e5f",
+      "name": "Rec 1 Header",
+      "x": 100,
+      "y": 250,
+      "width": 520,
+      "height": 42,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 0,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "Drastic Policy Reform",
+                "color": "#000000",
+                "marks": [
+                  "bold"
+                ],
+                "fontSize": "28px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": null
+          }
+        ]
+      },
+      "canvas_version_id": "fa93b071-1ba0-4472-859b-a7f346459759"
+    },
+    {
+      "id": "c2d3e4f5-a6b7-4c8d-9e0f-1a2b3c4d5e6a",
+      "name": "Rec 1 Body",
+      "x": 100,
+      "y": 300,
+      "width": 520,
+      "height": 144,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 0,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "Shift from small cash incentives to substantial, long-term support like affordable public housing, subsidized childcare, and paid parental leave for both parents.",
+                "color": "#000000",
+                "marks": [],
+                "fontSize": "24px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": "1.5"
+          }
+        ]
+      },
+      "canvas_version_id": "fa93b071-1ba0-4472-859b-a7f346459759"
+    },
+    {
+      "id": "7e09d079-e194-433c-8809-9926a71ae7be",
+      "name": "Rec 3 Body",
+      "x": 1300,
+      "y": 300,
+      "width": 520,
+      "height": 108,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 0,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "Increase social and legal support for non-traditional families (e.g., single parents) to reduce stigma.",
+                "color": "#000000",
+                "marks": [],
+                "fontSize": "24px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": "1.5"
+          }
+        ]
+      },
+      "canvas_version_id": "fa93b071-1ba0-4472-859b-a7f346459759"
+    },
+    {
+      "id": "326efcb0-fdfb-4f00-8da6-8f62694854d1",
+      "name": "Divider 1",
+      "x": 659,
+      "y": 250,
+      "width": 2,
+      "height": 230,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 0,
+      "locked": false,
+      "basicStyles": null,
+      "type": "shape",
+      "version": "v1",
+      "shape": {
+        "svgData": null,
+        "fillColor": "#7cd3b7",
+        "shapeType": "rectangle",
+        "svgViewBox": null,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "borderRadius": null
+      },
+      "canvas_version_id": "fa93b071-1ba0-4472-859b-a7f346459759"
+    },
+    {
+      "id": "f38ffb0a-6e71-402b-9f91-a8d6637876a2",
+      "name": "Divider 2",
+      "x": 1259,
+      "y": 250,
+      "width": 2,
+      "height": 230,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 0,
+      "locked": false,
+      "basicStyles": null,
+      "type": "shape",
+      "version": "v1",
+      "shape": {
+        "svgData": null,
+        "fillColor": "#7cd3b7",
+        "shapeType": "rectangle",
+        "svgViewBox": null,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "borderRadius": null
+      },
+      "canvas_version_id": "fa93b071-1ba0-4472-859b-a7f346459759"
+    },
+    {
+      "id": "b740e536-1fca-486a-a998-1ecab67e786f",
+      "name": "Placeholder Image",
+      "x": 100,
+      "y": 620,
+      "width": 786,
+      "height": 354,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 0,
+      "locked": false,
+      "basicStyles": null,
+      "type": "image",
+      "version": "v1",
+      "image": {
+        "alt": "A hopeful, forward-looking image of a diverse group of people working together to build a vibrant, sustainable city. The scene is bright and optimistic, featuring futuristic but eco-friendly architecture. Flat Color Illustration style, using a palette of greens, whites, and blues.",
+        "src": "flyingshelf-storyboard/captures/1760163806869-xdixuj7e8.png",
+        "borderRadius": null,
+        "naturalWidth": 800,
+        "naturalHeight": 360
+      },
+      "canvas_version_id": "fa93b071-1ba0-4472-859b-a7f346459759"
+    },
+    {
+      "id": "14b30339-fb43-422e-bb3b-4169d0b8cad3",
+      "name": "Quote Background",
+      "x": 966,
+      "y": 620,
+      "width": 854,
+      "height": 354,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "shape",
+      "version": "v1",
+      "shape": {
+        "svgData": null,
+        "fillColor": "#00bc8a",
+        "shapeType": "rectangle",
+        "svgViewBox": null,
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "borderRadius": 8
+      },
+      "canvas_version_id": "fa93b071-1ba0-4472-859b-a7f346459759"
+    },
+    {
+      "id": "135d7a23-63ff-48b1-a4e8-88578026a1a4",
+      "name": "Closing Thought",
+      "x": 1006,
+      "y": 745,
+      "width": 774,
+      "height": 90,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 2,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "The solution requires not just new policies, but a new social contract. Are we ready to build it?",
+                "color": "#ffffff",
+                "marks": [
+                  "italic"
+                ],
+                "fontSize": "32px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": "1.4"
+          }
+        ]
+      },
+      "canvas_version_id": "fa93b071-1ba0-4472-859b-a7f346459759"
+    },
+    {
+      "id": "e4186402-b241-4299-9a9a-a01719a3f59e",
+      "name": "Rec 2 Header",
+      "x": 700,
+      "y": 250,
+      "width": 520,
+      "height": 42,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 0,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "Corporate & Cultural Change",
+                "color": "#000000",
+                "marks": [
+                  "bold"
+                ],
+                "fontSize": "28px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": null
+          }
+        ]
+      },
+      "canvas_version_id": "fa93b071-1ba0-4472-859b-a7f346459759"
+    },
+    {
+      "id": "6c9833b6-8172-4d11-9f6e-f50fb3d3768f",
+      "name": "Rec 2 Body",
+      "x": 700,
+      "y": 300,
+      "width": 520,
+      "height": 144,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 0,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "Enforce and normalize reasonable work hours. Actively combat gender discrimination in hiring and promotion so women don't have to choose between work and family.",
+                "color": "#000000",
+                "marks": [],
+                "fontSize": "24px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": "1.5"
+          }
+        ]
+      },
+      "canvas_version_id": "fa93b071-1ba0-4472-859b-a7f346459759"
+    }
+  ],
+  "background": {
+    "url": "",
+    "color": ""
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "components": [
+    {
+      "id": "text-1",
+      "type": "text",
+      "name": "Roboto Regular",
+      "x": 100,
+      "y": 100,
+      "width": 800,
+      "height": 200,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "left",
+          "lineHeight": "1.2",
+          "spans": [{
+            "text": "Testing Roboto Font - Hello World! 你好世界",
+            "color": "#000000",
+            "marks": [],
+            "fontSize": "48px",
+            "fontFamily": "Roboto"
+          }]
+        }]
+      }
+    },
+    {
+      "id": "text-2",
+      "type": "text",
+      "name": "Roboto Bold",
+      "x": 100,
+      "y": 250,
+      "width": 800,
+      "height": 200,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "left",
+          "lineHeight": "1.2",
+          "spans": [{
+            "text": "Roboto Bold - Testing Font Weights",
+            "color": "#FF0000",
+            "marks": ["bold"],
+            "fontSize": "48px",
+            "fontFamily": "Roboto"
+          }]
+        }]
+      }
+    },
+    {
+      "id": "text-3",
+      "type": "text",
+      "name": "Roboto Light",
+      "x": 100,
+      "y": 400,
+      "width": 800,
+      "height": 200,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "left",
+          "lineHeight": "1.2",
+          "spans": [{
+            "text": "Roboto Light - Lightweight Typography",
+            "color": "#0000FF",
+            "marks": [],
+            "fontSize": "48px",
+            "fontFamily": "Roboto"
+          }]
+        }]
+      }
+    }
+  ],
+  "dimensions": {
+    "width": 1000,
+    "height": 700
+  },
+  "background": {
+    "url": "",
+    "color": "#FFFFFF"
+  },
+  "fonts": {
+    "Roboto": "Roboto"
+  }
+}
+

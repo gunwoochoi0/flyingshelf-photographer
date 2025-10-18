@@ -1,0 +1,193 @@
+{
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "components": [
+    {
+      "id": "5a9c98f0-65c4-4354-aafe-34473f26839d",
+      "name": "Accent Line",
+      "x": 120,
+      "y": 880,
+      "width": 100,
+      "height": 8,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "shape",
+      "version": "v1",
+      "shape": {
+        "svgData": null,
+        "fillColor": "#00bc8a",
+        "shapeType": "rectangle",
+        "svgViewBox": null,
+        "borderColor": "#00bc8a",
+        "borderWidth": 0,
+        "borderRadius": 0
+      },
+      "canvas_version_id": "4b71962f-a2b4-4679-bebb-365f9b3f17b0"
+    },
+    {
+      "id": "3dd5b048-feb8-4a78-8cf8-4e2b2643e62a",
+      "name": "Subtitle",
+      "x": 120,
+      "y": 592,
+      "width": 720,
+      "height": 84,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "Understanding the Causes and Consequences of the World's Lowest Birth Rate",
+                "color": "#000000",
+                "marks": [],
+                "fontSize": "32px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": "1.3"
+          }
+        ]
+      },
+      "canvas_version_id": "4b71962f-a2b4-4679-bebb-365f9b3f17b0"
+    },
+    {
+      "id": "eeaeb358-55b1-4984-9916-7036c73f0ac6",
+      "name": "Title",
+      "x": 120,
+      "y": 280,
+      "width": 800,
+      "height": 308,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "The Vanishing Generation: South Korea's Demographic Crisis",
+                "color": "#000000",
+                "marks": [
+                  "bold"
+                ],
+                "fontSize": "64px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": "1.2"
+          }
+        ]
+      },
+      "canvas_version_id": "4b71962f-a2b4-4679-bebb-365f9b3f17b0"
+    },
+    {
+      "id": "b53d7d9a-82e7-443d-a031-3f7ca4995c2c",
+      "name": "Presenter Details",
+      "x": 120,
+      "y": 904,
+      "width": 720,
+      "height": 40,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "[Your Name / Organization], October 2025",
+                "color": "#000000",
+                "marks": [],
+                "fontSize": "28px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": "1.4"
+          }
+        ]
+      },
+      "canvas_version_id": "4b71962f-a2b4-4679-bebb-365f9b3f17b0"
+    },
+    {
+      "id": "7e55527c-bdaf-4b24-bacf-d51f9ab1c30b",
+      "name": "Visual Element",
+      "x": 960,
+      "y": 0,
+      "width": 960,
+      "height": 1080,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 0,
+      "locked": false,
+      "basicStyles": null,
+      "type": "image",
+      "version": "v1",
+      "image": {
+        "alt": "A powerful, minimalist image of a single empty swing in a playground, viewed from the side. The scene is somber and uses a limited color palette of blacks, greys, and a single accent color of brand green #00bc8a. The style is a flat vector illustration, in the Corporate Memphis style, creating a stark and symbolic representation of a declining population.",
+        "src": "flyingshelf-storyboard/captures/1760150055722-v7diu7ned.png",
+        "borderRadius": null,
+        "naturalWidth": 960,
+        "naturalHeight": 1080
+      },
+      "canvas_version_id": "4b71962f-a2b4-4679-bebb-365f9b3f17b0"
+    },
+    {
+      "id": "a9217655-309e-417a-9164-0edc0d89f748",
+      "name": "Logo",
+      "x": 1810,
+      "y": 40,
+      "width": 70,
+      "height": 81,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 2,
+      "locked": false,
+      "basicStyles": null,
+      "type": "image",
+      "version": "v1",
+      "image": {
+        "alt": "Brand Logo",
+        "src": "flyingshelf-storyboard/captures/1760009118367-906gravbj.png",
+        "borderRadius": null,
+        "naturalWidth": 209,
+        "naturalHeight": 241
+      },
+      "canvas_version_id": "4b71962f-a2b4-4679-bebb-365f9b3f17b0"
+    }
+  ],
+  "background": {
+    "url": "",
+    "color": ""
+  }
+}

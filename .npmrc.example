@@ -1,0 +1,5 @@
+# Copy this file to .npmrc and replace YOUR_GITHUB_TOKEN with your actual token
+# Get your token from: https://github.com/settings/tokens
+@gunwoochoi0:registry=https://npm.pkg.github.com/
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
+

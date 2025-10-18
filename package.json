@@ -1,0 +1,50 @@
+{
+  "name": "flyingshelf-photographer-service",
+  "version": "1.0.0",
+  "description": "High-performance server-side canvas rendering service",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/server.js",
+    "dev:server": "tsc && concurrently \"tsc --watch\" \"nodemon --watch dist dist/server.js\"",
+    "test": "node test/render-example.js",
+    "docker:build": "docker build -t flyingshelf-photographer-service .",
+    "docker:run": "docker run -p 3000:3000 flyingshelf-photographer-service",
+    "docker:compose": "docker-compose up"
+  },
+  "keywords": [
+    "canvas",
+    "rendering",
+    "server-side",
+    "png",
+    "pdf",
+    "charts",
+    "d3"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@fastify/cors": "^9.0.1",
+    "@gunwoochoi0/flyingshelf-types": "1.0.2",
+    "@napi-rs/canvas": "^0.1.80",
+    "@resvg/resvg-js": "^2.6.2",
+    "d3": "^7.9.0",
+    "d3-scale": "^4.0.2",
+    "d3-scale-chromatic": "^3.1.0",
+    "fastify": "^4.25.1",
+    "jsdom": "^27.0.0"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3",
+    "@types/jsdom": "^21",
+    "@types/node": "^20",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.2",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

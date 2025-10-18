@@ -1,0 +1,154 @@
+{
+  "components": [
+    {
+      "id": "text-roboto",
+      "type": "text",
+      "name": "Roboto Test",
+      "x": 50,
+      "y": 50,
+      "width": 900,
+      "height": 100,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "left",
+          "lineHeight": "1.2",
+          "spans": [{
+            "text": "Roboto Regular: The quick brown fox jumps over the lazy dog",
+            "color": "#000000",
+            "marks": [],
+            "fontSize": "32px",
+            "fontFamily": "Roboto"
+          }]
+        }]
+      }
+    },
+    {
+      "id": "text-roboto-bold",
+      "type": "text",
+      "name": "Roboto Bold Test",
+      "x": 50,
+      "y": 170,
+      "width": 900,
+      "height": 100,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "left",
+          "lineHeight": "1.2",
+          "spans": [{
+            "text": "Roboto Bold: Testing font weight variations 123456",
+            "color": "#FF0000",
+            "marks": ["bold"],
+            "fontSize": "32px",
+            "fontFamily": "Roboto"
+          }]
+        }]
+      }
+    },
+    {
+      "id": "text-montserrat",
+      "type": "text",
+      "name": "Montserrat Test",
+      "x": 50,
+      "y": 290,
+      "width": 900,
+      "height": 100,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "left",
+          "lineHeight": "1.2",
+          "spans": [{
+            "text": "Montserrat: Professional typography example",
+            "color": "#0000FF",
+            "marks": [],
+            "fontSize": "32px",
+            "fontFamily": "Montserrat"
+          }]
+        }]
+      }
+    },
+    {
+      "id": "text-opensans",
+      "type": "text",
+      "name": "Open Sans Test",
+      "x": 50,
+      "y": 410,
+      "width": 900,
+      "height": 100,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "left",
+          "lineHeight": "1.2",
+          "spans": [{
+            "text": "Open Sans: Clean and modern web font",
+            "color": "#00AA00",
+            "marks": [],
+            "fontSize": "32px",
+            "fontFamily": "Open Sans"
+          }]
+        }]
+      }
+    },
+    {
+      "id": "text-pacifico",
+      "type": "text",
+      "name": "Pacifico Test",
+      "x": 50,
+      "y": 530,
+      "width": 900,
+      "height": 100,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "text": {
+        "blocks": [{
+          "type": "paragraph",
+          "align": "left",
+          "lineHeight": "1.2",
+          "spans": [{
+            "text": "Pacifico: Stylish script font",
+            "color": "#FF00FF",
+            "marks": [],
+            "fontSize": "32px",
+            "fontFamily": "Pacifico"
+          }]
+        }]
+      }
+    }
+  ],
+  "dimensions": {
+    "width": 1000,
+    "height": 700
+  },
+  "background": {
+    "url": "",
+    "color": "#F5F5F5"
+  },
+  "fonts": {
+    "Roboto": "Roboto",
+    "Montserrat": "Montserrat",
+    "Open Sans": "Open Sans",
+    "Pacifico": "Pacifico"
+  }
+}
+

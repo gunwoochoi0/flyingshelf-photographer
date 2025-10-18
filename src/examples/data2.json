@@ -1,0 +1,603 @@
+{
+  "dimensions": {
+    "width": 1920,
+    "height": 1080
+  },
+  "components": [
+    {
+      "id": "06d4375c-98e2-4ae7-bb9b-49e9b74ccd31",
+      "name": "Logo",
+      "x": 1770,
+      "y": 40,
+      "width": 70,
+      "height": 81,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 10,
+      "locked": false,
+      "basicStyles": null,
+      "type": "image",
+      "version": "v1",
+      "image": {
+        "alt": "Brand Logo",
+        "src": "flyingshelf-storyboard/captures/1760009118367-906gravbj.png",
+        "borderRadius": null,
+        "naturalWidth": 209,
+        "naturalHeight": 241
+      },
+      "canvas_version_id": "6b13277a-f511-4dd9-8508-023f5742523b"
+    },
+    {
+      "id": "98336824-e12b-4009-8ebe-bedb0e53c475",
+      "name": "Vertical Separator 1",
+      "x": 640,
+      "y": 200,
+      "width": 1,
+      "height": 750,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 0,
+      "locked": false,
+      "basicStyles": null,
+      "type": "shape",
+      "version": "v1",
+      "shape": {
+        "svgData": null,
+        "fillColor": "#DEDEDE",
+        "shapeType": "rectangle",
+        "svgViewBox": null,
+        "borderColor": "transparent",
+        "borderWidth": 0,
+        "borderRadius": 0
+      },
+      "canvas_version_id": "6b13277a-f511-4dd9-8508-023f5742523b"
+    },
+    {
+      "id": "8a4599ee-24e0-4af1-9b94-785738205856",
+      "name": "Vertical Separator 2",
+      "x": 1280,
+      "y": 200,
+      "width": 1,
+      "height": 750,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 0,
+      "locked": false,
+      "basicStyles": null,
+      "type": "shape",
+      "version": "v1",
+      "shape": {
+        "svgData": null,
+        "fillColor": "#DEDEDE",
+        "shapeType": "rectangle",
+        "svgViewBox": null,
+        "borderColor": "transparent",
+        "borderWidth": 0,
+        "borderRadius": 0
+      },
+      "canvas_version_id": "6b13277a-f511-4dd9-8508-023f5742523b"
+    },
+    {
+      "id": "29a1118a-d2cd-466c-86b9-ec5f1a23476f",
+      "name": "Fertility Rate Chart",
+      "x": 80,
+      "y": 440,
+      "width": 520,
+      "height": 450,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "chart",
+      "version": "v1",
+      "chart": {
+        "title": {
+          "text": "Total Fertility Rate Comparison (2022)"
+        },
+        "yAxis": {
+          "title": {
+            "text": "Total Fertility Rate (Children per Woman)"
+          }
+        },
+        "datasets": [
+          {
+            "data": [
+              0.72,
+              -1,
+              -1,
+              -1,
+              -1
+            ],
+            "label": "South Korea",
+            "style": {
+              "color": "#00bc8a",
+              "opacity": 1
+            }
+          },
+          {
+            "data": [
+              -1,
+              1.26,
+              1.46,
+              1.66,
+              2.3
+            ],
+            "label": "TFR",
+            "style": {
+              "color": "#cccccc",
+              "opacity": 1
+            }
+          },
+          {
+            "data": [
+              2.1,
+              2.1,
+              2.1,
+              2.1,
+              2.1
+            ],
+            "label": "Replacement Level",
+            "style": {
+              "borderColor": "#333333",
+              "borderWidth": 2
+            }
+          }
+        ],
+        "chartType": "bar",
+        "background": "#ffffff",
+        "categories": [
+          "South Korea",
+          "Japan",
+          "Germany",
+          "USA",
+          "World Average"
+        ]
+      },
+      "canvas_version_id": "6b13277a-f511-4dd9-8508-023f5742523b"
+    },
+    {
+      "id": "1725c12e-27a2-456f-bb7b-b30e1884dfac",
+      "name": "Demographic Cliff Chart",
+      "x": 680,
+      "y": 308,
+      "width": 560,
+      "height": 380,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "chart",
+      "version": "v1",
+      "chart": {
+        "title": {
+          "text": "South Korea: Projected Population Crossover (2020-2070)"
+        },
+        "xAxis": {
+          "title": {
+            "text": "Year"
+          }
+        },
+        "yAxis": {
+          "title": {
+            "text": "Annual Count (in thousands)"
+          }
+        },
+        "datasets": [
+          {
+            "data": [
+              320,
+              300,
+              280,
+              260,
+              240,
+              220,
+              200,
+              180,
+              160,
+              140,
+              120
+            ],
+            "label": "Births",
+            "style": {
+              "borderColor": "#00bc8a",
+              "borderWidth": 3
+            }
+          },
+          {
+            "data": [
+              220,
+              230,
+              240,
+              250,
+              265,
+              280,
+              295,
+              310,
+              325,
+              340,
+              355
+            ],
+            "label": "Deaths",
+            "style": {
+              "borderColor": "#000000",
+              "borderWidth": 3
+            }
+          }
+        ],
+        "chartType": "line",
+        "background": "#ffffff",
+        "categories": [
+          "2020",
+          "2025",
+          "2030",
+          "2035",
+          "2040",
+          "2045",
+          "2050",
+          "2055",
+          "2060",
+          "2065",
+          "2070"
+        ]
+      },
+      "canvas_version_id": "6b13277a-f511-4dd9-8508-023f5742523b"
+    },
+    {
+      "id": "cda53bfc-1c69-4107-ac15-7b09f9a2477b",
+      "name": "Info Box Background",
+      "x": 1320,
+      "y": 424,
+      "width": 520,
+      "height": 240,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "shape",
+      "version": "v1",
+      "shape": {
+        "svgData": null,
+        "fillColor": "#7cd3b7",
+        "shapeType": "rectangle",
+        "svgViewBox": null,
+        "borderColor": "transparent",
+        "borderWidth": 0,
+        "borderRadius": 8
+      },
+      "canvas_version_id": "6b13277a-f511-4dd9-8508-023f5742523b"
+    },
+    {
+      "id": "ff746d28-2661-479c-856a-39f6949e577f",
+      "name": "Key Point 3 Header",
+      "x": 1320,
+      "y": 220,
+      "width": 520,
+      "height": 48,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "An Unprecedented Pace",
+                "color": "#000000",
+                "marks": [],
+                "fontSize": "32px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": null
+          }
+        ]
+      },
+      "canvas_version_id": "6b13277a-f511-4dd9-8508-023f5742523b"
+    },
+    {
+      "id": "ca2c62d6-e845-42bc-88f1-cb7061131e73",
+      "name": "Info Box Text",
+      "x": 1340,
+      "y": 444,
+      "width": 480,
+      "height": 168,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 2,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "Transition from an 'aging' to a 'super-aged' society is projected to take just 25 years, compared to 40 for Japan and 85 for France.",
+                "color": "#000000",
+                "marks": [],
+                "fontSize": "28px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": "1.5"
+          }
+        ]
+      },
+      "canvas_version_id": "6b13277a-f511-4dd9-8508-023f5742523b"
+    },
+    {
+      "id": "bee52742-d668-4c14-ba92-ca4636974bfe",
+      "name": "Key Point 2 Header",
+      "x": 680,
+      "y": 220,
+      "width": 560,
+      "height": 48,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "The \"Demographic Cliff\"",
+                "color": "#000000",
+                "marks": [],
+                "fontSize": "32px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": null
+          }
+        ]
+      },
+      "canvas_version_id": "6b13277a-f511-4dd9-8508-023f5742523b"
+    },
+    {
+      "id": "f4262160-c22b-484c-9b7f-62379929f1ff",
+      "name": "Key Point 3 Text",
+      "x": 1320,
+      "y": 292,
+      "width": 520,
+      "height": 101,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "The speed of this demographic shift is faster than that experienced by any other country in modern history.",
+                "color": "#000000",
+                "marks": [],
+                "fontSize": "24px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": "1.4"
+          }
+        ]
+      },
+      "canvas_version_id": "6b13277a-f511-4dd9-8508-023f5742523b"
+    },
+    {
+      "id": "67581738-68c8-4a72-8c9a-5733be05c336",
+      "name": "Median Age Highlight",
+      "x": 680,
+      "y": 720,
+      "width": 560,
+      "height": 135,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "center",
+            "spans": [
+              {
+                "text": "45 → 58",
+                "color": "#000000",
+                "marks": [],
+                "fontSize": "90px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": null
+          }
+        ]
+      },
+      "canvas_version_id": "6b13277a-f511-4dd9-8508-023f5742523b"
+    },
+    {
+      "id": "e3a4b5c6-12d3-4e5f-9a8b-7c6d5e4f3a2b",
+      "name": "Title",
+      "x": 80,
+      "y": 100,
+      "width": 800,
+      "height": 78,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "A Portrait of Decline",
+                "color": "#000000",
+                "marks": [
+                  "bold"
+                ],
+                "fontSize": "52px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": null
+          }
+        ]
+      },
+      "canvas_version_id": "6b13277a-f511-4dd9-8508-023f5742523b"
+    },
+    {
+      "id": "bdb9c6c9-6b6d-4a66-a5c5-f103889b7aba",
+      "name": "Key Point 1 Header",
+      "x": 80,
+      "y": 220,
+      "width": 520,
+      "height": 48,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "The World's Lowest Fertility Rate",
+                "color": "#000000",
+                "marks": [],
+                "fontSize": "32px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": null
+          }
+        ]
+      },
+      "canvas_version_id": "6b13277a-f511-4dd9-8508-023f5742523b"
+    },
+    {
+      "id": "51f4f1fa-70f7-4919-b60b-37ca0ce10aca",
+      "name": "Median Age Context",
+      "x": 680,
+      "y": 879,
+      "width": 560,
+      "height": 56,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "The median age is projected to skyrocket from 45 in 2023 to 58 by 2070, highlighting a rapidly aging population.",
+                "color": "#000000",
+                "marks": [],
+                "fontSize": "20px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": "1.4"
+          }
+        ]
+      },
+      "canvas_version_id": "6b13277a-f511-4dd9-8508-023f5742523b"
+    },
+    {
+      "id": "78246d3b-91da-4a1e-bda4-b8503e5e9ed7",
+      "name": "Key Point 1 Text",
+      "x": 80,
+      "y": 292,
+      "width": 520,
+      "height": 101,
+      "rotation": 0,
+      "opacity": 1,
+      "zIndex": 1,
+      "locked": false,
+      "basicStyles": null,
+      "type": "text",
+      "version": "v1",
+      "text": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "align": "left",
+            "spans": [
+              {
+                "text": "South Korea's Total Fertility Rate (TFR) is drastically below the 2.1 replacement level needed for a stable population.",
+                "color": "#000000",
+                "marks": [],
+                "fontSize": "24px",
+                "fontFamily": "Helvetica",
+                "letterSpacing": null,
+                "backgroundColor": null
+              }
+            ],
+            "lineHeight": "1.4"
+          }
+        ]
+      },
+      "canvas_version_id": "6b13277a-f511-4dd9-8508-023f5742523b"
+    }
+  ],
+  "background": {
+    "url": "",
+    "color": ""
+  }
+}
