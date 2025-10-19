@@ -11,16 +11,16 @@ services:
     volumes:
       # Mount source code for live development
       - ./src:/app/src
-      - ./dist:/app/dist
       - ./test:/app/test
       - ./tsconfig.json:/app/tsconfig.json
       # Don't mount node_modules (use container's version)
       - /app/node_modules
+      # Don't mount dist - let it build inside container to avoid permission issues
     environment:
       - NODE_ENV=development
       - PORT=3000
     # Override command for development with auto-reload
-    command: npm run dev:server
+    command: sh -c "npm run build && npm run dev:server"
     # Auto-restart on crash
     restart: unless-stopped
     # See logs in real-time
