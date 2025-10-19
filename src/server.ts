@@ -16,7 +16,7 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',') 
   : IS_DEVELOPMENT 
     ? ['*'] // Development: Allow all origins
-    : ['https://flyingshelf.ai']; // Production: Restrict to specific origins
+    : ['https://flyingshelf.ai', 'http://localhost:3001', 'http://localhost:3000']; // Production: Restrict to specific origins
 
 // CORS configuration with secret header bypass
 fastify.register(cors, {
