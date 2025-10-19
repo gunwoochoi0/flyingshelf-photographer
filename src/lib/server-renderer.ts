@@ -322,24 +322,98 @@ async function renderTextObject(
       for (let i = 0; i < words.length; i++) {
         const word = words[i];
         const isLastWord = i === words.length - 1;
-        const textToMeasure = isLastWord ? word : word + ' ';
-        const wordWidth = ctx.measureText(textToMeasure).width;
+        const spaceAfter = isLastWord ? '' : ' ';
+        const wordWidth = ctx.measureText(word).width;
 
-        // Check if we need to start a new line
-        if (currentLineWidth + wordWidth > width && currentLineWidth > 0) {
-          // Start new line
-          lines.push([]);
-          currentLineWidth = 0;
+        // If word is too long to fit on one line, break it character by character
+        if (wordWidth > width) {
+          let remainingWord = word;
+          
+          while (remainingWord.length > 0) {
+            let charCount = 0;
+            
+            // Find how many characters fit on the current line
+            while (charCount < remainingWord.length) {
+              const testText = remainingWord.substring(0, charCount + 1);
+              const testWidth = ctx.measureText(testText).width;
+              
+              // Check if adding this character would exceed the width
+              if (currentLineWidth + testWidth > width) {
+                // If we have content on the line, stop here
+                if (currentLineWidth > 0) {
+                  break;
+                }
+                // If line is empty but this text alone exceeds width, we still need to stop
+                // (we'll force 1 char later if charCount is 0)
+                if (charCount > 0) {
+                  break;
+                }
+              }
+              charCount++;
+            }
+            
+            // If we couldn't fit any characters and the line is not empty, start a new line
+            if (charCount === 0 && currentLineWidth > 0) {
+              lines.push([]);
+              currentLineWidth = 0;
+              continue;
+            }
+            
+            // If we still can't fit any characters (line is empty), force at least one character
+            if (charCount === 0) charCount = 1;
+            
+            // Add the portion that fits
+            const portion = remainingWord.substring(0, charCount);
+            const portionWidth = ctx.measureText(portion).width;
+            
+            lines[lines.length - 1].push({
+              ...segment,
+              text: portion,
+              width: portionWidth
+            });
+            currentLineWidth += portionWidth;
+            
+            remainingWord = remainingWord.substring(charCount);
+            
+            // If there's more to render, start a new line
+            if (remainingWord.length > 0) {
+              lines.push([]);
+              currentLineWidth = 0;
+            }
+          }
+          
+          // Add space after the word if needed
+          if (spaceAfter) {
+            const spaceWidth = ctx.measureText(spaceAfter).width;
+            if (currentLineWidth + spaceWidth > width) {
+              lines.push([]);
+              currentLineWidth = 0;
+            } else {
+              lines[lines.length - 1].push({
+                ...segment,
+                text: spaceAfter,
+                width: spaceWidth
+              });
+              currentLineWidth += spaceWidth;
+            }
+          }
+        } else {
+          // Word fits normally
+          const textToMeasure = word + spaceAfter;
+          const totalWidth = ctx.measureText(textToMeasure).width;
+
+          if (currentLineWidth + totalWidth > width && currentLineWidth > 0) {
+            lines.push([]);
+            currentLineWidth = 0;
+          }
+
+          lines[lines.length - 1].push({
+            ...segment,
+            text: textToMeasure,
+            width: totalWidth
+          });
+          currentLineWidth += totalWidth;
         }
-
-        // Add word to current line
-        const currentLine = lines[lines.length - 1];
-        currentLine.push({
-          ...segment,
-          text: textToMeasure,
-          width: wordWidth
-        });
-        currentLineWidth += wordWidth;
       }
 
       if (segment.letterSpacing) {
