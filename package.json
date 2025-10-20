@@ -1,6 +1,6 @@
 {
   "name": "flyingshelf-photographer-service",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "High-performance server-side canvas rendering service",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -30,11 +30,13 @@
     "@gunwoochoi0/flyingshelf-types": "1.0.2",
     "@napi-rs/canvas": "^0.1.80",
     "@resvg/resvg-js": "^2.6.2",
+    "axios": "^1.7.2",
     "d3": "^7.9.0",
     "d3-scale": "^4.0.2",
     "d3-scale-chromatic": "^3.1.0",
-    "fastify": "^4.25.1",
-    "jsdom": "^27.0.0"
+    "fastify": "^4.27.0",
+    "jsdom": "^27.0.0",
+    "sharp": "^0.33.4"
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",
@@ -42,7 +44,7 @@
     "@types/node": "^20",
     "concurrently": "^8.2.2",
     "nodemon": "^3.0.2",
-    "typescript": "^5"
+    "typescript": "^5.4.5"
   },
   "engines": {
     "node": ">=18.0.0"

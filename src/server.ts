@@ -5,6 +5,7 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import { renderCanvasServerSide, canRenderServerSide, CanvasVersionSnapshot, initializeUnicodeFonts } from './index';
+import { renderWorkerPool } from './lib/worker-pool';
 
 const fastify = Fastify({ logger: false });
 const PORT = Number(process.env.PORT) || 3000;
@@ -188,7 +189,18 @@ fastify.post('/render', async (request, reply) => {
   const isBase64 = format === 'base64';
 
   const startTime = Date.now();
-  const imageBuffer = await renderCanvasServerSide(versionData, dimensions, fonts, 2, outputFormat, jpegQuality);
+  
+  // OLD WAY: const imageBuffer = await renderCanvasServerSide(versionData, dimensions, fonts, 2, outputFormat, jpegQuality);
+
+  // NEW WAY: Use the worker pool
+  const imageBuffer = await renderWorkerPool.run({
+    versionData,
+    dimensions,
+    fonts,
+    outputFormat,
+    jpegQuality,
+  }) as Buffer;
+
   const renderTime = Date.now() - startTime;
 
   console.log(`✅ Rendered in ${renderTime}ms (${components.length} components, ${(imageBuffer.length / 1024).toFixed(2)} KB, format: ${outputFormat})`);
@@ -361,5 +373,11 @@ fastify.listen({ port: PORT, host: '0.0.0.0' }, (err, address) => {
 // Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('🛑 Shutting down...');
+  fastify.close(() => process.exit(0));
+});
+
+process.on('SIGINT', async () => {
+  console.log('🛑 Shutting down gracefully...');
+  await renderWorkerPool.destroy();
   fastify.close(() => process.exit(0));
 });
