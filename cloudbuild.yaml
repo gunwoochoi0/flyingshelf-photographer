@@ -64,6 +64,7 @@ steps:
       - '--memory=2Gi'
       - '--cpu=2'
       - '--timeout=900s'
+      - '--concurrency=15'
       - '--max-instances=100'
       - '--min-instances=0'
       - '--allow-unauthenticated'
