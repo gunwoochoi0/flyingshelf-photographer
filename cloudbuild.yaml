@@ -64,7 +64,7 @@ steps:
       - '--memory=2Gi'
       - '--cpu=2'
       - '--timeout=900s'
-      - '--cpu-utilization=0.8'
+      - '--max-instances=100'
       - '--min-instances=0'
       - '--allow-unauthenticated'
       - '--set-env-vars=^@^NODE_ENV=production@ALLOWED_ORIGINS=https://flyingshelf.ai,https://www.flyingshelf.ai'
