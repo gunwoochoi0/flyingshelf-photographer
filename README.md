@@ -936,6 +936,41 @@ Times New Roman → DejaVu Serif
 Courier → DejaVu Sans Mono
 ```
 
+### **Technical Details: Font Format & Caching**
+
+#### User-Agent & Font Format
+Google Fonts API returns different formats based on the User-Agent:
+- **Browser User-Agents** (Chrome, Firefox): Return **WOFF2** format (❌ not compatible with @napi-rs/canvas)
+- **Server User-Agents** (curl, wget, Node.js): Return **TTF** format (✅ required for @napi-rs/canvas)
+
+Our implementation automatically uses `curl/7.64.1` User-Agent to ensure TTF format.
+
+#### Multi-Layer Caching
+The font system uses aggressive caching for optimal performance:
+
+1. **In-Memory Caches**:
+   - CSS responses (24-hour TTL)
+   - Font metadata (URLs, weights)
+   - Downloaded font registry
+   - Failed font tracking (prevents retry spam)
+
+2. **Disk Cache**: `.fonts-cache/` directory
+   - Persists between container restarts
+   - Mounted as Docker volume
+   - Automatically reused on subsequent requests
+
+3. **CSS URL Support**:
+   ```json
+   "fonts": {
+     "Montserrat": "https://fonts.googleapis.com/css?family=Montserrat:300,400,700&display=swap"
+   }
+   ```
+   Supports both direct font URLs and Google Fonts CSS URLs for maximum flexibility.
+
+4. **Parallel Downloads**: All font weights download concurrently for faster initial load.
+
+**Result**: First request downloads fonts (~300-500ms), subsequent requests use cache (~5-10ms).
+
 ---
 
 ## 📦 Files

@@ -68,7 +68,7 @@ steps:
       - '--max-instances=10'
       - '--min-instances=0'
       - '--allow-unauthenticated'
-      - '--set-env-vars=ALLOWED_ORIGINS=https://flyingshelf.ai'
+      - '--set-env-vars=NODE_ENV=production,ALLOWED_ORIGINS=https://flyingshelf.ai,https://www.flyingshelf.ai'
       - '--set-secrets=API_SECRET=api-secret:latest'
       - '--port=3000'
 

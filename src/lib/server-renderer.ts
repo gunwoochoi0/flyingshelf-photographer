@@ -264,14 +264,28 @@ async function renderTextObject(
     const segments: TextSegment[] = [];
     
     for (const span of block.spans) {
+      const isDev = process.env.NODE_ENV !== 'production';
       const fontSize = parseFloat(span.fontSize || '16px');
       let fontFamily = span.fontFamily || 'Inter';
+      const originalFontFamily = fontFamily;
+      
+      if (isDev && fontFamily !== 'Liberation Sans') {
+        console.log(`\n  📝 PROCESSING SPAN:`);
+        console.log(`     Original fontFamily from span: "${span.fontFamily}"`);
+        console.log(`     Resolved to: "${fontFamily}"`);
+      }
       
       await registerFont(fontFamily);
       
       // Use fallback font if the original failed to load
       if (fontFallbackMap.has(fontFamily)) {
-        fontFamily = fontFallbackMap.get(fontFamily)!;
+        const fallback = fontFallbackMap.get(fontFamily)!;
+        if (isDev && fontFamily !== 'Liberation Sans') {
+          console.log(`     ⚠️  Font in fallbackMap! Replacing "${fontFamily}" with "${fallback}"`);
+        }
+        fontFamily = fallback;
+      } else if (isDev && fontFamily !== 'Liberation Sans') {
+        console.log(`     ✅ Font NOT in fallbackMap, will use: "${fontFamily}"`);
       }
 
       // Map font weights properly for canvas
@@ -308,9 +322,34 @@ async function renderTextObject(
     const maxLineHeight = Math.max(...segments.map(s => s.fontSize));
 
     for (const segment of segments) {
+      const isDev = process.env.NODE_ENV !== 'production';
+      
+      // CRITICAL FIX: Use clean font name (without CSS fallbacks) for registered fonts
+      // TTF files have internal family names without fallbacks (e.g., "Playfair Display")
+      // Even though we register as "Playfair Display, serif", @napi-rs/canvas matches by internal name
+      const cleanFontFamily = segment.fontFamily.split(',')[0].trim();
+      
       // Use font with Unicode fallback chain for multi-language support
-      const fontFallback = `"${segment.fontFamily}", "Noto Sans CJK KR", "Noto Sans", "DejaVu Sans", sans-serif`;
-      ctx.font = `${segment.fontStyle} ${segment.fontWeight} ${segment.fontSize}px ${fontFallback}`;
+      const fontFallback = `"${cleanFontFamily}", "Noto Sans CJK KR", "Noto Sans", "DejaVu Sans", sans-serif`;
+      const fullFont = `${segment.fontStyle} ${segment.fontWeight} ${segment.fontSize}px ${fontFallback}`;
+      
+      // Debug: Before setting font
+      if (isDev && segment.fontFamily !== 'Liberation Sans') {
+        console.log(`\n  🎨 SETTING FONT FOR MEASUREMENT:`);
+        console.log(`     Original: "${segment.fontFamily}"`);
+        console.log(`     Clean name: "${cleanFontFamily}"`);
+        console.log(`     Full font string: ${fullFont}`);
+        console.log(`     In registeredFonts? ${registeredFonts.has(segment.fontFamily)}`);
+      }
+      
+      ctx.font = fullFont;
+      
+      // Debug: After setting font - check what font is actually active
+      if (isDev && segment.fontFamily !== 'Liberation Sans') {
+        const testMetrics = ctx.measureText('W');
+        console.log(`     Set ctx.font successfully`);
+        console.log(`     Test char width: ${testMetrics.width}px\n`);
+      }
       
       if (segment.letterSpacing) {
         (ctx as any).letterSpacing = segment.letterSpacing;
@@ -438,10 +477,32 @@ async function renderTextObject(
 
       // Render each segment in the line
       for (const segment of line) {
+        const isDev = process.env.NODE_ENV !== 'production';
+        
+        // CRITICAL FIX: Use clean font name (without CSS fallbacks)
+        const cleanFontFamily = segment.fontFamily.split(',')[0].trim();
+        
         // Use font with Unicode fallback chain for multi-language support
-        const fontFallback = `"${segment.fontFamily}", "Noto Sans CJK KR", "Noto Sans", "DejaVu Sans", sans-serif`;
-        ctx.font = `${segment.fontStyle} ${segment.fontWeight} ${segment.fontSize}px ${fontFallback}`;
+        const fontFallback = `"${cleanFontFamily}", "Noto Sans CJK KR", "Noto Sans", "DejaVu Sans", sans-serif`;
+        const fullFont = `${segment.fontStyle} ${segment.fontWeight} ${segment.fontSize}px ${fontFallback}`;
+        
+        // Debug: Before rendering
+        if (isDev && segment.fontFamily !== 'Liberation Sans') {
+          console.log(`\n  🖋️  RENDERING TEXT:`);
+          console.log(`     Text: "${segment.text.substring(0, 30)}${segment.text.length > 30 ? '...' : ''}"`);
+          console.log(`     Original: "${segment.fontFamily}" → Clean: "${cleanFontFamily}"`);
+          console.log(`     Weight: ${segment.fontWeight}`);
+          console.log(`     Full font: ${fullFont.substring(0, 100)}${fullFont.length > 100 ? '...' : ''}`);
+        }
+        
+        ctx.font = fullFont;
         ctx.fillStyle = segment.color;
+        
+        // Debug: After setting font
+        if (isDev && segment.fontFamily !== 'Liberation Sans') {
+          const testMetrics = ctx.measureText('W');
+          console.log(`     'W' width: ${testMetrics.width}px\n`);
+        }
 
         if (segment.letterSpacing) {
           (ctx as any).letterSpacing = segment.letterSpacing;
