@@ -255,6 +255,8 @@ async function fetchGoogleFontCSS(fontFamily: string, weights: string[] = ['300'
     `https://fonts.googleapis.com/css2?family=${fontFamily}:wght@${weights.join(';')}&display=swap`,
     // CSS API (older format, fallback)
     `https://fonts.googleapis.com/css?family=${fontFamily}:${weights.join(',')}&display=swap`,
+    // Fallback for variable fonts or single-weight fonts (no specific weights)
+    `https://fonts.googleapis.com/css2?family=${fontFamily}&display=swap`,
   ];
   
   for (const url of urls) {
@@ -296,7 +298,7 @@ function parseTTFUrlsFromCSS(css: string): Array<{ url: string; weight: string }
   
   // Pattern 1: CSS2 format with font-weight property (TTF)
   // @font-face { font-family: 'X'; font-weight: 400; src: url(https://...ttf) }
-  const css2TtfRegex = /font-weight:\s*(\d+);[\s\S]*?url\((https:\/\/fonts\.gstatic\.com\/[^)]+\.ttf)\)/g;
+  const css2TtfRegex = /font-weight:\s*(\d+);[\s\S]*?src:\s*url\((https:\/\/fonts\.gstatic\.com\/[^)]+\.ttf)\)/g;
   let match;
   
   while ((match = css2TtfRegex.exec(css)) !== null) {
@@ -363,15 +365,18 @@ function parseTTFUrlsFromCSS(css: string): Array<{ url: string; weight: string }
  */
 async function downloadGoogleFontDirect(fontName: string): Promise<boolean> {
   try {
-    const safeFilename = fontName.replace(/[^a-zA-Z0-9-_]/g, '-');
+    // Clean the font name to remove quotes for API calls and filenames,
+    // but keep the original `fontName` for registration.
+    const cleanNameForApi = fontName.replace(/['"]/g, '');
+    const safeFilename = cleanNameForApi.replace(/[^a-zA-Z0-9-_]/g, '-');
     
-    console.log(`⬇️  Attempting to download Google Font: ${fontName}`);
+    console.log(`⬇️  Attempting to download Google Font: "${fontName}" (using name for API: "${cleanNameForApi}")`);
     
     // Format font name for Google Fonts API (spaces to +)
-    const fontFamily = fontName.replace(/\s+/g, '+');
+    const fontFamily = cleanNameForApi.replace(/\s+/g, '+');
     
     // Check metadata cache first
-    const metadataCacheKey = fontName;
+    const metadataCacheKey = fontName; // Use original name for cache
     let ttfUrls: Array<{ url: string; weight: string }> = [];
     
     if (fontMetadataCache.has(metadataCacheKey)) {
@@ -655,6 +660,22 @@ export async function downloadAndRegisterFont(
   fontName: string,
   fontUrlOrName: string,
 ): Promise<boolean> {
+  // Add a set of generic font families to skip downloading
+  const genericFontFamilies = new Set([
+    'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui',
+    'ui-serif', 'ui-sans-serif', 'ui-monospace', 'ui-rounded',
+    'emoji', 'math', 'fangsong',
+    // Common system fonts that shouldn't be fetched
+    'arial', 'helvetica', 'times new roman', 'times', 'courier new', 'courier',
+    'verdana', 'georgia', 'tahoma', 'garamond', 'impact', 'sans'
+  ]);
+
+  const cleanFontNameToTest = fontUrlOrName.split(',')[0].trim();
+  if (genericFontFamilies.has(cleanFontNameToTest.toLowerCase())) {
+    console.log(`✓ Skipping download for generic/system font: "${fontUrlOrName}"`);
+    return true; // Assume system fallback will handle it
+  }
+
   // Check if already downloaded
   if (downloadedFonts.has(fontName)) {
     return true;
