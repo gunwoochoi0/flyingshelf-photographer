@@ -166,19 +166,25 @@ fastify.post('/render', async (request, reply) => {
     }
   }
 
-  if (!canRenderServerSide(components)) {
+  // Filter out unsupported components (videos and placeholders)
+  const supportedComponents = components.filter((c: any) => {
+    if (c.type === 'video' || c.type.startsWith('placeholder-')) {
+      return false;
+    }
+    return true;
+  });
+
+  // Log if any components were filtered out
+  if (supportedComponents.length < components.length) {
     const unsupported = components.filter((c: any) => c.type === 'video' || c.type.startsWith('placeholder-'));
-    return reply.code(400).send({
-      error: 'Unsupported components detected',
-      unsupportedTypes: unsupported.map((c: any) => c.type)
-    });
+    console.log(`⚠️  Ignoring ${unsupported.length} unsupported component(s): ${unsupported.map((c: any) => c.type).join(', ')}`);
   }
 
   const versionData: CanvasVersionSnapshot = {
     id: id || `render-${Date.now()}`,
     parentId: parentId || null,
     name: name || 'Rendered Canvas',
-    components,
+    components: supportedComponents,
     timestamp: Date.now(),
     background: background || { url: '', color: '#FFFFFF' }
   };
@@ -203,7 +209,7 @@ fastify.post('/render', async (request, reply) => {
 
   const renderTime = Date.now() - startTime;
 
-  console.log(`✅ Rendered in ${renderTime}ms (${components.length} components, ${(imageBuffer.length / 1024).toFixed(2)} KB, format: ${outputFormat})`);
+  console.log(`✅ Rendered in ${renderTime}ms (${supportedComponents.length} components, ${(imageBuffer.length / 1024).toFixed(2)} KB, format: ${outputFormat})`);
 
   // Return format based on query parameter
   if (isBase64) {
@@ -226,7 +232,7 @@ fastify.post('/render', async (request, reply) => {
           },
           format: outputFormat,
           quality: outputFormat === 'jpeg' ? jpegQuality : undefined,
-          componentsCount: components.length,
+          componentsCount: supportedComponents.length,
           timestamp: new Date().toISOString()
         }
       });

@@ -579,26 +579,20 @@ async function renderTextObject(
       // Use alphabetic baseline (standard for canvas text)
       ctx.textBaseline = 'alphabetic';
       
-      // Get actual font metrics for accurate positioning
-      // Use the first segment's font to measure
-      const firstSegment = line[0];
-      const measureFont = `${firstSegment.fontStyle} ${firstSegment.fontWeight} ${firstSegment.fontSize}px "${firstSegment.fontFamily.split(',')[0].trim().replace(/^["']|["']$/g, '')}"`;
-      ctx.font = measureFont;
-      const metrics = ctx.measureText('M'); // Use 'M' for cap-height measurement
-      
-      // Calculate baseline position
-      // The ascent tells us how far above the baseline the text extends
-      const fontAscent = metrics.actualBoundingBoxAscent || (maxLineHeight * 0.8);
+      // Calculate baseline position to match browser rendering
+      // Browsers typically position baseline at ~85% of fontSize from top
+      // This leaves room for descenders below the baseline
+      const baselineRatio = 0.85;
       
       let textY;
       if (lineHeight === 1.0) {
-        // Line-height = 1.0: baseline at ascent distance from top
-        textY = currentY + fontAscent;
+        // Line-height = 1.0: baseline at 85% of fontSize from top
+        textY = currentY + (maxLineHeight * baselineRatio);
       } else {
-        // Line-height > 1.0: extra space distributed, then baseline at ascent
+        // Line-height > 1.0: extra space distributed, then baseline at 85% of fontSize
         const extraSpace = (lineHeight - 1.0) * maxLineHeight;
         const topPadding = extraSpace / 2;
-        textY = currentY + topPadding + fontAscent;
+        textY = currentY + topPadding + (maxLineHeight * baselineRatio);
       }
       
       // Debug vertical positioning
@@ -606,13 +600,9 @@ async function renderTextObject(
         console.log(`\n  📍 LINE POSITIONING:`);
         console.log(`     currentY: ${currentY.toFixed(2)}px`);
         console.log(`     maxLineHeight (font-size): ${maxLineHeight}px`);
-        console.log(`     lineHeight multiplier: ${lineHeight}`);
-        console.log(`     Actual font ascent: ${fontAscent.toFixed(2)}px`);
-        if (lineHeight !== 1.0) {
-          const extraSpace = (lineHeight - 1.0) * maxLineHeight;
-          console.log(`     Extra space: ${extraSpace.toFixed(2)}px (${(extraSpace/2).toFixed(2)}px top + ${(extraSpace/2).toFixed(2)}px bottom)`);
-        }
-        console.log(`     textY (alphabetic baseline): ${textY.toFixed(2)}px`);
+        console.log(`     Baseline ratio: ${baselineRatio} (baseline at ${(baselineRatio * 100).toFixed(0)}% of fontSize)`);
+        console.log(`     textY (baseline): ${textY.toFixed(2)}px`);
+        console.log(`     lineHeight: ${lineHeight}`);
       }
 
       // Render each segment in the line
