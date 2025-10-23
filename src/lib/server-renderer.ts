@@ -391,21 +391,27 @@ async function renderTextObject(
       
       ctx.font = fullFont;
       
-      // Apply letter-spacing for measurements (canvas property)
+      // Reset letter-spacing for accurate measurements
+      (ctx as any).letterSpacing = '0px';
+      
+      // Calculate manual letter-spacing in pixels
+      let letterSpacingPx = 0;
       if (segment.letterSpacing && segment.letterSpacing !== 'normal' && segment.letterSpacing !== '0px') {
-        (ctx as any).letterSpacing = segment.letterSpacing;
-      } else {
-        (ctx as any).letterSpacing = '0px';
+        if (segment.letterSpacing.endsWith('em')) {
+          letterSpacingPx = parseFloat(segment.letterSpacing) * segment.fontSize;
+        } else if (segment.letterSpacing.endsWith('px')) {
+          letterSpacingPx = parseFloat(segment.letterSpacing);
+        }
       }
       
-      // Debug: After setting font - check what font is actually active
+      // Debug: After setting font
       if (isDev && segment.fontFamily !== 'Liberation Sans') {
         const testMetrics = ctx.measureText('W');
         const digitMetrics = ctx.measureText('0');
         console.log(`     Set ctx.font successfully`);
         console.log(`     Test char width: W=${testMetrics.width.toFixed(2)}px, 0=${digitMetrics.width.toFixed(2)}px`);
-        if (segment.letterSpacing && segment.letterSpacing !== 'normal' && segment.letterSpacing !== '0px') {
-          console.log(`     Letter-spacing: ${segment.letterSpacing}`);
+        if (letterSpacingPx !== 0) {
+          console.log(`     Manual letter-spacing: ${segment.letterSpacing} = ${letterSpacingPx.toFixed(2)}px per gap`);
         }
         console.log('');
       }
@@ -433,8 +439,11 @@ async function renderTextObject(
           // Only add space if not the last word, or if not the last part (newline comes next)
           const spaceAfter = isLastWord ? '' : ' ';
           
-          // Measure word width (letterSpacing is already applied to ctx)
-          const wordWidth = ctx.measureText(word).width;
+          // Measure word width and add manual letter-spacing
+          let wordWidth = ctx.measureText(word).width;
+          if (letterSpacingPx !== 0 && word.length > 1) {
+            wordWidth += letterSpacingPx * (word.length - 1);
+          }
 
           // If word is too long to fit on one line, break it character by character
           if (wordWidth > width) {
@@ -446,7 +455,10 @@ async function renderTextObject(
             // Find how many characters fit on the current line
             while (charCount < remainingWord.length) {
               const testText = remainingWord.substring(0, charCount + 1);
-              const testWidth = ctx.measureText(testText).width;
+              let testWidth = ctx.measureText(testText).width;
+              if (letterSpacingPx !== 0 && testText.length > 1) {
+                testWidth += letterSpacingPx * (testText.length - 1);
+              }
               
               // Check if adding this character would exceed the width
               if (currentLineWidth + testWidth > width) {
@@ -475,7 +487,10 @@ async function renderTextObject(
             
             // Add the portion that fits
             const portion = remainingWord.substring(0, charCount);
-            const portionWidth = ctx.measureText(portion).width;
+            let portionWidth = ctx.measureText(portion).width;
+            if (letterSpacingPx !== 0 && portion.length > 1) {
+              portionWidth += letterSpacingPx * (portion.length - 1);
+            }
             
             lines[lines.length - 1].push({
               ...segment,
@@ -514,7 +529,10 @@ async function renderTextObject(
         } else {
           // Word fits normally
           const textToMeasure = word + spaceAfter;
-          const totalWidth = ctx.measureText(textToMeasure).width;
+          let totalWidth = ctx.measureText(textToMeasure).width;
+          if (letterSpacingPx !== 0 && textToMeasure.length > 1) {
+            totalWidth += letterSpacingPx * (textToMeasure.length - 1);
+          }
 
           if (currentLineWidth + totalWidth > width && currentLineWidth > 0) {
             lines.push([]);
@@ -560,15 +578,41 @@ async function renderTextObject(
 
       // Use alphabetic baseline (standard for canvas text)
       ctx.textBaseline = 'alphabetic';
-      const textY = currentY + maxLineHeight;
+      
+      // Get actual font metrics for accurate positioning
+      // Use the first segment's font to measure
+      const firstSegment = line[0];
+      const measureFont = `${firstSegment.fontStyle} ${firstSegment.fontWeight} ${firstSegment.fontSize}px "${firstSegment.fontFamily.split(',')[0].trim().replace(/^["']|["']$/g, '')}"`;
+      ctx.font = measureFont;
+      const metrics = ctx.measureText('M'); // Use 'M' for cap-height measurement
+      
+      // Calculate baseline position
+      // The ascent tells us how far above the baseline the text extends
+      const fontAscent = metrics.actualBoundingBoxAscent || (maxLineHeight * 0.8);
+      
+      let textY;
+      if (lineHeight === 1.0) {
+        // Line-height = 1.0: baseline at ascent distance from top
+        textY = currentY + fontAscent;
+      } else {
+        // Line-height > 1.0: extra space distributed, then baseline at ascent
+        const extraSpace = (lineHeight - 1.0) * maxLineHeight;
+        const topPadding = extraSpace / 2;
+        textY = currentY + topPadding + fontAscent;
+      }
       
       // Debug vertical positioning
       if (isDev && line.length > 0 && line[0].fontFamily !== 'Liberation Sans') {
         console.log(`\n  📍 LINE POSITIONING:`);
         console.log(`     currentY: ${currentY.toFixed(2)}px`);
         console.log(`     maxLineHeight (font-size): ${maxLineHeight}px`);
-        console.log(`     textY (alphabetic baseline): ${textY.toFixed(2)}px`);
         console.log(`     lineHeight multiplier: ${lineHeight}`);
+        console.log(`     Actual font ascent: ${fontAscent.toFixed(2)}px`);
+        if (lineHeight !== 1.0) {
+          const extraSpace = (lineHeight - 1.0) * maxLineHeight;
+          console.log(`     Extra space: ${extraSpace.toFixed(2)}px (${(extraSpace/2).toFixed(2)}px top + ${(extraSpace/2).toFixed(2)}px bottom)`);
+        }
+        console.log(`     textY (alphabetic baseline): ${textY.toFixed(2)}px`);
       }
 
       // Render each segment in the line
@@ -592,12 +636,17 @@ async function renderTextObject(
         ctx.font = fullFont;
         ctx.fillStyle = segment.color;
         
-        // Apply letter-spacing using canvas native property
-        // It's not pixel-perfect but avoids rendering artifacts
+        // Reset letter-spacing (we implement it manually)
+        (ctx as any).letterSpacing = '0px';
+        
+        // Calculate manual letter-spacing for this segment
+        let renderLetterSpacingPx = 0;
         if (segment.letterSpacing && segment.letterSpacing !== 'normal' && segment.letterSpacing !== '0px') {
-          (ctx as any).letterSpacing = segment.letterSpacing;
-        } else {
-          (ctx as any).letterSpacing = '0px';
+          if (segment.letterSpacing.endsWith('em')) {
+            renderLetterSpacingPx = parseFloat(segment.letterSpacing) * segment.fontSize;
+          } else if (segment.letterSpacing.endsWith('px')) {
+            renderLetterSpacingPx = parseFloat(segment.letterSpacing);
+          }
         }
         
         // Debug: After setting font
@@ -605,8 +654,8 @@ async function renderTextObject(
           const testMetrics = ctx.measureText('W');
           const digitMetrics = ctx.measureText('0');
           console.log(`     'W' width: ${testMetrics.width.toFixed(2)}px, '0' width: ${digitMetrics.width.toFixed(2)}px`);
-          if (segment.letterSpacing && segment.letterSpacing !== 'normal' && segment.letterSpacing !== '0px') {
-            console.log(`     Letter-spacing: ${segment.letterSpacing}`);
+          if (renderLetterSpacingPx !== 0) {
+            console.log(`     Manual letter-spacing: ${segment.letterSpacing} = ${renderLetterSpacingPx.toFixed(2)}px per gap`);
           }
           console.log('');
         }
@@ -618,8 +667,20 @@ async function renderTextObject(
           ctx.fillStyle = segment.color;
         }
 
-        // Draw text normally - canvas handles letter-spacing
-        ctx.fillText(segment.text, textX, textY);
+        // Draw text with manual letter-spacing implementation
+        if (renderLetterSpacingPx !== 0) {
+          // Draw each character individually with spacing
+          let charX = textX;
+          for (let i = 0; i < segment.text.length; i++) {
+            const char = segment.text[i];
+            ctx.fillText(char, charX, textY);
+            const charWidth = ctx.measureText(char).width;
+            charX += charWidth + renderLetterSpacingPx;
+          }
+        } else {
+          // No letter-spacing, draw normally
+          ctx.fillText(segment.text, textX, textY);
+        }
 
         // Handle underline
         if (segment.marks.includes('underline')) {
