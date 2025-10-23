@@ -61,9 +61,10 @@ async function fetchWithRetry(url: string, options: any = {}, retries = 3): Prom
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 30000); // 30s timeout
       
-      // Use a server-side User-Agent to get TTF files instead of WOFF2 from Google Fonts
-      const defaultUserAgent = url.includes('fonts.googleapis.com') 
-        ? 'curl/7.64.1' // Server-like UA returns TTF files
+      // Use curl User-Agent to get true static TTF files (one file per weight)
+      // Browser User-Agent returns variable fonts which don't work properly with @napi-rs/canvas
+      const defaultUserAgent = url.includes('fonts.googleapis.com')
+        ? 'curl/7.64.1'  // Gets static TTF files
         : 'Mozilla/5.0 (compatible; CanvasRenderer/1.0)';
       
       const response = await fetch(url, {
@@ -241,7 +242,7 @@ async function downloadGoogleFont(fontName: string): Promise<boolean> {
  * Tries both css2 and css formats
  * Uses server-like User-Agent to get TTF files instead of WOFF2
  */
-async function fetchGoogleFontCSS(fontFamily: string, weights: string[] = ['300', '400', '500', '700']): Promise<string | null> {
+async function fetchGoogleFontCSS(fontFamily: string, weights: string[] = ['100', '200', '300', '400', '500', '600', '700', '800', '900']): Promise<string | null> {
   const cacheKey = `${fontFamily}:${weights.join(',')}`;
   
   // Check in-memory cache first
@@ -250,13 +251,14 @@ async function fetchGoogleFontCSS(fontFamily: string, weights: string[] = ['300'
     return cssCache.get(cacheKey)!;
   }
   
+  // Encode font family for URL (replace spaces with +)
+  const encodedFamily = fontFamily.replace(/ /g, '+');
+  
   const urls = [
-    // CSS2 API (newer, better format)
-    `https://fonts.googleapis.com/css2?family=${fontFamily}:wght@${weights.join(';')}&display=swap`,
-    // CSS API (older format, fallback)
-    `https://fonts.googleapis.com/css?family=${fontFamily}:${weights.join(',')}&display=swap`,
-    // Fallback for variable fonts or single-weight fonts (no specific weights)
-    `https://fonts.googleapis.com/css2?family=${fontFamily}&display=swap`,
+    // Use individual static fonts - variable fonts don't work properly in @napi-rs/canvas
+    `https://fonts.googleapis.com/css2?family=${encodedFamily}:wght@${weights.join(';')}&display=swap`,
+    // Fallback: Just the font name
+    `https://fonts.googleapis.com/css2?family=${encodedFamily}&display=swap`,
   ];
   
   for (const url of urls) {
@@ -326,8 +328,8 @@ function parseTTFUrlsFromCSS(css: string): Array<{ url: string; weight: string }
     }
   }
   
-  // Pattern 3: WOFF2 format (fallback - need to extract from CSS)
-  // We'll use only latin subset to avoid duplicates
+  // Pattern 3: WOFF2 format (use directly - @napi-rs/canvas supports WOFF2)
+  // Only use static fonts (one file per weight) - variable fonts don't render correctly
   if (fontUrls.length === 0) {
     // Match font-weight and corresponding woff2 URL, but only for latin subset
     const sections = css.split('@font-face');
@@ -335,19 +337,17 @@ function parseTTFUrlsFromCSS(css: string): Array<{ url: string; weight: string }
     for (const section of sections) {
       // Only process latin subset (avoid duplicates from cyrillic, vietnamese, etc.)
       if (!section.includes('unicode-range') || section.includes('U+0000-00FF')) {
-        const weightMatch = section.match(/font-weight:\s*(\d+)/);
+        // Match single weight only (e.g., "400"), skip variable fonts (e.g., "200 800")
+        const weightMatch = section.match(/font-weight:\s*(\d+);/);
         const urlMatch = section.match(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+\.woff2)\)/);
         
         if (weightMatch && urlMatch) {
           const weight = weightMatch[1];
           const woff2Url = urlMatch[1];
           
-          // Convert woff2 URL to ttf URL by replacing extension
-          // Note: This might not always work, but we'll try
-          const ttfUrl = woff2Url.replace(/\.woff2$/, '.ttf');
-          
+          // Use WOFF2 static fonts (each weight is a separate file)
           if (!seenWeights.has(weight)) {
-            fontUrls.push({ weight, url: ttfUrl });
+            fontUrls.push({ weight, url: woff2Url });
             seenWeights.add(weight);
           }
         }
@@ -427,13 +427,16 @@ async function downloadGoogleFontDirect(fontName: string): Promise<boolean> {
     // Download all variants in parallel for better performance
     const downloadResults = await Promise.allSettled(
       ttfUrls.map(async ({ url, weight }) => {
-        const variantPath = path.join(FONTS_CACHE_DIR, `${safeFilename}-${weight}.ttf`);
+        // Detect file extension from URL (could be .ttf or .woff2)
+        const ext = url.endsWith('.woff2') ? 'woff2' : 'ttf';
+        const variantPath = path.join(FONTS_CACHE_DIR, `${safeFilename}-${weight}.${ext}`);
         
         // Check if already cached
         if (existsSync(variantPath)) {
           try {
-            // Register with clean font name for @napi-rs/canvas
-            GlobalFonts.registerFromPath(variantPath, fontName);
+            // Register WITHOUT specifying name - use font's internal metadata
+            // This allows @napi-rs/canvas to properly differentiate weights
+            GlobalFonts.registerFromPath(variantPath);
             downloadedWeights.set(weight, variantPath);
             console.log(`  ✓ Loaded cached variant: ${weight}`);
             return { weight, success: true, path: variantPath };
@@ -462,8 +465,8 @@ async function downloadGoogleFontDirect(fontName: string): Promise<boolean> {
           // Save to disk
           await writeFile(variantPath, Buffer.from(arrayBuffer));
           
-          // Register with canvas using clean font name
-          GlobalFonts.registerFromPath(variantPath, fontName);
+          // Register WITHOUT specifying name - use font's internal metadata
+          GlobalFonts.registerFromPath(variantPath);
           downloadedWeights.set(weight, variantPath);
           
           console.log(`  ✅ Downloaded and registered: weight ${weight} (${(arrayBuffer.byteLength / 1024).toFixed(1)}KB)`);
@@ -481,9 +484,15 @@ async function downloadGoogleFontDirect(fontName: string): Promise<boolean> {
     ).length;
     
     if (successCount > 0) {
-      downloadedFonts.set(fontName, path.join(FONTS_CACHE_DIR, `${safeFilename}-400.ttf`));
+      // Try to find weight 400, or use the first available weight
+      const defaultWeight = downloadedWeights.get('400') || downloadedWeights.values().next().value || '';
+      if (defaultWeight) {
+        downloadedFonts.set(fontName, defaultWeight);
+      }
       const weights = Array.from(downloadedWeights.keys()).sort();
       console.log(`✅ Google Font "${fontName}" ready (${successCount} variants: ${weights.join(', ')})`);
+      
+      console.log(`  ✓ Font "${fontName}" ready for rendering with all weights`);
       return true;
     }
     

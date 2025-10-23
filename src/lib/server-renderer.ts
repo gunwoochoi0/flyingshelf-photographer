@@ -235,10 +235,20 @@ async function renderTextObject(
 
   let currentY = 0;
 
+  const isDev = process.env.NODE_ENV !== 'production';
+  
   // Render each block (paragraph)
-  for (const block of text.blocks) {
+  for (let blockIndex = 0; blockIndex < text.blocks.length; blockIndex++) {
+    const block = text.blocks[blockIndex];
     const align = block.align || 'left';
     const lineHeight = parseFloat(block.lineHeight || '1.5');
+    const paragraphStartY = currentY;
+    
+    if (isDev && block.spans && block.spans.length > 0 && block.spans[0].fontFamily !== 'Liberation Sans') {
+      console.log(`\n  📄 PARAGRAPH ${blockIndex + 1}/${text.blocks.length}:`);
+      console.log(`     Starting at Y: ${currentY.toFixed(2)}px`);
+      console.log(`     Alignment: ${align}, Line-height multiplier: ${lineHeight}`);
+    }
     
     // Skip empty paragraphs
     if (!block.spans || block.spans.length === 0) {
@@ -264,9 +274,9 @@ async function renderTextObject(
     const segments: TextSegment[] = [];
     
     for (const span of block.spans) {
-      const isDev = process.env.NODE_ENV !== 'production';
       const fontSize = parseFloat(span.fontSize || '16px');
-      let fontFamily = span.fontFamily || 'Inter';
+      // Clean font family: remove quotes that might be in the data
+      let fontFamily = (span.fontFamily || 'Inter').replace(/^["']|["']$/g, '');
       const originalFontFamily = fontFamily;
       
       if (isDev && fontFamily !== 'Liberation Sans') {
@@ -289,16 +299,46 @@ async function renderTextObject(
       }
 
       // Map font weights properly for canvas
-      let fontWeight = '400'; // default normal weight
-      let fontStyle = 'normal';
+      // Priority: 1) explicit fontWeight property (if exists), 2) bold mark, 3) default 400
+      // Note: fontWeight/fontStyle might not be in the type but could be in the data
+      const spanAny = span as any;
       
-      if (span.marks?.includes('bold')) {
-        fontWeight = '700'; // Use numeric weight for bold
+      // Handle font weight - support both string and numeric values
+      let fontWeight = '400'; // default normal weight
+      if (spanAny.fontWeight) {
+        // Convert numeric weights to strings, handle "bold"/"normal" keywords
+        const weight = spanAny.fontWeight.toString();
+        if (weight === 'bold') {
+          fontWeight = '700';
+        } else if (weight === 'normal') {
+          fontWeight = '400';
+        } else if (weight === 'lighter') {
+          fontWeight = '300';
+        } else if (weight === 'bolder') {
+          fontWeight = '700';
+        } else {
+          fontWeight = weight;
+        }
+      } else if (span.marks?.includes('bold')) {
+        fontWeight = '700'; // Use numeric weight for bold mark
       }
-      if (span.marks?.includes('italic')) {
+      
+      let fontStyle = spanAny.fontStyle || 'normal';
+      if (!spanAny.fontStyle && span.marks?.includes('italic')) {
         fontStyle = 'italic';
       }
 
+      const letterSpacing = span.letterSpacing || null;
+      
+      // Debug logging for font properties
+      if (isDev && fontFamily !== 'Liberation Sans') {
+        console.log(`     Font weight: ${fontWeight} (from ${spanAny.fontWeight ? 'span.fontWeight' : span.marks?.includes('bold') ? 'bold mark' : 'default'})`);
+        console.log(`     Font style: ${fontStyle} (from ${spanAny.fontStyle ? 'span.fontStyle' : span.marks?.includes('italic') ? 'italic mark' : 'default'})`);
+        if (letterSpacing) {
+          console.log(`     Letter spacing: ${letterSpacing}`);
+        }
+      }
+      
       segments.push({
         text: span.text,
         fontSize,
@@ -308,7 +348,7 @@ async function renderTextObject(
         color: span.color || '#000000',
         backgroundColor: span.backgroundColor || null,
         marks: span.marks || [],
-        letterSpacing: span.letterSpacing || null
+        letterSpacing
       });
     }
 
@@ -320,14 +360,21 @@ async function renderTextObject(
     const lines: WrappedSegment[][] = [[]];
     let currentLineWidth = 0;
     const maxLineHeight = Math.max(...segments.map(s => s.fontSize));
+    
+    if (isDev && segments.length > 0 && segments[0].fontFamily !== 'Liberation Sans') {
+      console.log(`\n  📏 TEXT WRAPPING:`);
+      console.log(`     Container width: ${width}px`);
+      console.log(`     Max line height: ${maxLineHeight}px (from font-size)`);
+      console.log(`     Line height multiplier: ${lineHeight}`);
+      console.log(`     Calculated line spacing: ${(maxLineHeight * lineHeight).toFixed(2)}px`);
+    }
 
     for (const segment of segments) {
-      const isDev = process.env.NODE_ENV !== 'production';
-      
       // CRITICAL FIX: Use clean font name (without CSS fallbacks) for registered fonts
       // TTF files have internal family names without fallbacks (e.g., "Playfair Display")
       // Even though we register as "Playfair Display, serif", @napi-rs/canvas matches by internal name
-      const cleanFontFamily = segment.fontFamily.split(',')[0].trim();
+      // Also remove any literal quote characters that might be in the data
+      const cleanFontFamily = segment.fontFamily.split(',')[0].trim().replace(/^["']|["']$/g, '');
       
       // Use font with Unicode fallback chain for multi-language support
       const fontFallback = `"${cleanFontFamily}", "Noto Sans CJK KR", "Noto Sans", "DejaVu Sans", sans-serif`;
@@ -344,29 +391,54 @@ async function renderTextObject(
       
       ctx.font = fullFont;
       
+      // Apply letter-spacing for measurements (canvas property)
+      if (segment.letterSpacing && segment.letterSpacing !== 'normal' && segment.letterSpacing !== '0px') {
+        (ctx as any).letterSpacing = segment.letterSpacing;
+      } else {
+        (ctx as any).letterSpacing = '0px';
+      }
+      
       // Debug: After setting font - check what font is actually active
       if (isDev && segment.fontFamily !== 'Liberation Sans') {
         const testMetrics = ctx.measureText('W');
+        const digitMetrics = ctx.measureText('0');
         console.log(`     Set ctx.font successfully`);
-        console.log(`     Test char width: ${testMetrics.width}px\n`);
-      }
-      
-      if (segment.letterSpacing) {
-        (ctx as any).letterSpacing = segment.letterSpacing;
+        console.log(`     Test char width: W=${testMetrics.width.toFixed(2)}px, 0=${digitMetrics.width.toFixed(2)}px`);
+        if (segment.letterSpacing && segment.letterSpacing !== 'normal' && segment.letterSpacing !== '0px') {
+          console.log(`     Letter-spacing: ${segment.letterSpacing}`);
+        }
+        console.log('');
       }
 
-      // Split segment by words
-      const words = segment.text.split(' ');
+      // Split segment by newlines first, then by words
+      // Browsers treat \n as a hard line break
+      const textParts = segment.text.split('\n');
       
-      for (let i = 0; i < words.length; i++) {
-        const word = words[i];
-        const isLastWord = i === words.length - 1;
-        const spaceAfter = isLastWord ? '' : ' ';
-        const wordWidth = ctx.measureText(word).width;
+      for (let partIdx = 0; partIdx < textParts.length; partIdx++) {
+        const part = textParts[partIdx];
+        const isLastPart = partIdx === textParts.length - 1;
+        
+        // If this part is not the first and we have a newline, force a line break
+        if (partIdx > 0) {
+          lines.push([]);
+          currentLineWidth = 0;
+        }
+        
+        // Now split this part by words
+        const words = part.split(' ');
+        
+        for (let i = 0; i < words.length; i++) {
+          const word = words[i];
+          const isLastWord = i === words.length - 1;
+          // Only add space if not the last word, or if not the last part (newline comes next)
+          const spaceAfter = isLastWord ? '' : ' ';
+          
+          // Measure word width (letterSpacing is already applied to ctx)
+          const wordWidth = ctx.measureText(word).width;
 
-        // If word is too long to fit on one line, break it character by character
-        if (wordWidth > width) {
-          let remainingWord = word;
+          // If word is too long to fit on one line, break it character by character
+          if (wordWidth > width) {
+            let remainingWord = word;
           
           while (remainingWord.length > 0) {
             let charCount = 0;
@@ -423,7 +495,10 @@ async function renderTextObject(
           
           // Add space after the word if needed
           if (spaceAfter) {
-            const spaceWidth = ctx.measureText(spaceAfter).width;
+            let spaceWidth = ctx.measureText(spaceAfter).width;
+            // Space character also gets letter-spacing if text has multiple chars
+            // (though space is just one char, it's part of the overall spacing)
+            
             if (currentLineWidth + spaceWidth > width) {
               lines.push([]);
               currentLineWidth = 0;
@@ -452,14 +527,25 @@ async function renderTextObject(
             width: totalWidth
           });
           currentLineWidth += totalWidth;
+          }
         }
-      }
-
-      if (segment.letterSpacing) {
-        (ctx as any).letterSpacing = '0px';
       }
     }
 
+    // Debug: Show line wrapping results
+    if (isDev && segments.length > 0 && segments[0].fontFamily !== 'Liberation Sans') {
+      console.log(`\n  📊 WRAPPING COMPLETE:`);
+      console.log(`     Total lines: ${lines.length}`);
+      lines.forEach((line, idx) => {
+        const lineWidth = line.reduce((sum, seg) => sum + seg.width, 0);
+        const lineText = line.map(seg => seg.text).join('');
+        console.log(`     Line ${idx + 1}: "${lineText.substring(0, 40)}${lineText.length > 40 ? '...' : ''}" (${lineWidth.toFixed(2)}px)`);
+      });
+      const totalHeight = currentY + (lines.length * maxLineHeight * lineHeight);
+      console.log(`     Total height will be: ${totalHeight.toFixed(2)}px`);
+      console.log(`     (currentY: ${currentY.toFixed(2)} + lines: ${lines.length} × ${maxLineHeight}px × ${lineHeight} = ${(lines.length * maxLineHeight * lineHeight).toFixed(2)})`);
+    }
+    
     // Render each line
     for (const line of lines) {
       const lineWidth = line.reduce((sum, seg) => sum + seg.width, 0);
@@ -472,15 +558,23 @@ async function renderTextObject(
         textX = width - lineWidth;
       }
 
+      // Use alphabetic baseline (standard for canvas text)
       ctx.textBaseline = 'alphabetic';
       const textY = currentY + maxLineHeight;
+      
+      // Debug vertical positioning
+      if (isDev && line.length > 0 && line[0].fontFamily !== 'Liberation Sans') {
+        console.log(`\n  📍 LINE POSITIONING:`);
+        console.log(`     currentY: ${currentY.toFixed(2)}px`);
+        console.log(`     maxLineHeight (font-size): ${maxLineHeight}px`);
+        console.log(`     textY (alphabetic baseline): ${textY.toFixed(2)}px`);
+        console.log(`     lineHeight multiplier: ${lineHeight}`);
+      }
 
       // Render each segment in the line
       for (const segment of line) {
-        const isDev = process.env.NODE_ENV !== 'production';
-        
-        // CRITICAL FIX: Use clean font name (without CSS fallbacks)
-        const cleanFontFamily = segment.fontFamily.split(',')[0].trim();
+        // CRITICAL FIX: Use clean font name (without CSS fallbacks and quotes)
+        const cleanFontFamily = segment.fontFamily.split(',')[0].trim().replace(/^["']|["']$/g, '');
         
         // Use font with Unicode fallback chain for multi-language support
         const fontFallback = `"${cleanFontFamily}", "Noto Sans CJK KR", "Noto Sans", "DejaVu Sans", sans-serif`;
@@ -498,14 +592,23 @@ async function renderTextObject(
         ctx.font = fullFont;
         ctx.fillStyle = segment.color;
         
+        // Apply letter-spacing using canvas native property
+        // It's not pixel-perfect but avoids rendering artifacts
+        if (segment.letterSpacing && segment.letterSpacing !== 'normal' && segment.letterSpacing !== '0px') {
+          (ctx as any).letterSpacing = segment.letterSpacing;
+        } else {
+          (ctx as any).letterSpacing = '0px';
+        }
+        
         // Debug: After setting font
         if (isDev && segment.fontFamily !== 'Liberation Sans') {
           const testMetrics = ctx.measureText('W');
-          console.log(`     'W' width: ${testMetrics.width}px\n`);
-        }
-
-        if (segment.letterSpacing) {
-          (ctx as any).letterSpacing = segment.letterSpacing;
+          const digitMetrics = ctx.measureText('0');
+          console.log(`     'W' width: ${testMetrics.width.toFixed(2)}px, '0' width: ${digitMetrics.width.toFixed(2)}px`);
+          if (segment.letterSpacing && segment.letterSpacing !== 'normal' && segment.letterSpacing !== '0px') {
+            console.log(`     Letter-spacing: ${segment.letterSpacing}`);
+          }
+          console.log('');
         }
 
         // Draw background color if specified
@@ -515,7 +618,7 @@ async function renderTextObject(
           ctx.fillStyle = segment.color;
         }
 
-        // Draw text
+        // Draw text normally - canvas handles letter-spacing
         ctx.fillText(segment.text, textX, textY);
 
         // Handle underline
@@ -539,14 +642,20 @@ async function renderTextObject(
         }
 
         textX += segment.width;
-
-        if (segment.letterSpacing) {
-          (ctx as any).letterSpacing = '0px';
-        }
       }
 
       // Move to next line
       currentY += maxLineHeight * lineHeight;
+    }
+    
+    // Debug: Show final Y position after this paragraph
+    if (isDev && block.spans && block.spans.length > 0 && block.spans[0].fontFamily !== 'Liberation Sans') {
+      console.log(`\n  📄 PARAGRAPH ${blockIndex + 1} COMPLETE:`);
+      console.log(`     Ending at Y: ${currentY.toFixed(2)}px`);
+      console.log(`     Height consumed: ${(currentY - paragraphStartY).toFixed(2)}px`);
+      if (blockIndex < text.blocks.length - 1) {
+        console.log(`     (Next paragraph will start at ${currentY.toFixed(2)}px)`);
+      }
     }
   }
 
