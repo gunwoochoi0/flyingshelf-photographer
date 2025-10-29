@@ -36,7 +36,3 @@ export {
   isFontAvailable,
   getAvailableFonts
 } from './lib/dynamic-font-loader';
-
-// Re-export all types from @gunwoochoi0/flyingshelf-types
-export * from '@gunwoochoi0/flyingshelf-types';
-

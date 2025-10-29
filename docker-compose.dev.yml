@@ -4,8 +4,8 @@ services:
   # Canvas Render Service (Development Mode)
   canvas-api:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..  # Use parent directory to access both projects
+      dockerfile: flyingshelf-photographer/Dockerfile.dev
     ports:
       - "3001:3000"  # Change host port here (3001 = your Mac, 3000 = container)
     volumes:
@@ -13,6 +13,8 @@ services:
       - ./src:/app/src
       - ./test:/app/test
       - ./tsconfig.json:/app/tsconfig.json
+      # Mount local flyingshelf-types package for development
+      - ../flyingshelf-types:/app/node_modules/@gunwoochoi0/flyingshelf-types
       # Don't mount node_modules (use container's version)
       - /app/node_modules
       # Don't mount dist - let it build inside container to avoid permission issues
