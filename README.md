@@ -14,6 +14,10 @@ Fast HTTP API that converts JSON canvas data to PNG images. Built with Fastify, 
 
 ## ⚡️ Development Quick Start
 
+**Prerequisites:**
+- Docker installed
+- Local `flyingshelf-types` package at `../flyingshelf-types/` (sibling directory)
+
 **Start the development server:**
 
 ```bash
@@ -22,11 +26,12 @@ docker-compose -f docker-compose.dev.yml up --build
 
 🎉 **That's it!** Your server will:
 - ✅ Start on `http://localhost:3001`
+- ✅ Use local `@gunwoochoi0/flyingshelf-types` package
 - ✅ Show real-time logs
-- ✅ Auto-reload on any code changes
+- ✅ Auto-reload on any code changes in `src/` or `../flyingshelf-types/`
 - ✅ Compile TypeScript automatically
 
-Just edit files in `src/` and watch the magic happen!
+Just edit files in `src/` or `../flyingshelf-types/src/` and watch the magic happen!
 
 **Stop the server:**
 

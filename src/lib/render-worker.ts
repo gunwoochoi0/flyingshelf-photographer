@@ -1,6 +1,6 @@
 
 import { parentPort } from 'worker_threads';
-import { renderCanvasServerSide, CanvasVersionSnapshot } from '../index';
+import { renderCanvasServerSide } from '../index';
 
 if (!parentPort) {
   throw new Error('This file must be run as a worker thread.');

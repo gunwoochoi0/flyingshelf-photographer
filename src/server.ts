@@ -4,7 +4,8 @@
 
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
-import { renderCanvasServerSide, canRenderServerSide, CanvasVersionSnapshot, initializeUnicodeFonts } from './index';
+import { CanvasVersionSnapshot } from '@gunwoochoi0/flyingshelf-types';
+import { renderCanvasServerSide, canRenderServerSide, initializeUnicodeFonts } from './index';
 import { renderWorkerPool } from './lib/worker-pool';
 
 const fastify = Fastify({ logger: false });
