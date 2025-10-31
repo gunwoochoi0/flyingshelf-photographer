@@ -21,8 +21,11 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
     : [
         'https://flyingshelf.ai',
         'https://www.flyingshelf.ai',
+        'https://api.flyingshelf.ai',
         'http://localhost:3001', 
-        'http://localhost:3000'
+        'http://localhost:3000',
+        'https://flyingshelf-job-api-243243513452.us-central1.run.app',
+        'https://flyingshelf-job-worker-243243513452.us-central1.run.app',
       ]; // Production: Restrict to specific origins
 
 // CORS configuration with secret header bypass
